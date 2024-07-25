@@ -9,7 +9,7 @@ const Hero = ({title='Become A React Dev',children,subtitle}:headingProps) => {
   return (
     <>
     {/* <!-- Hero --> */}
-    <section className="bg-emerald-600 py-20 mb-4">
+    <section className="bg-emerald-600 py-20 mb-0">
         <div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center"
         >
