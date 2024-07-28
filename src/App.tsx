@@ -3,6 +3,7 @@ import Hero from "./components/Hero"
 import HomeCards from "./components/HomeCards"
 import JobListing from "./components/JobListing"
 import ViewAllJobs from "./components/ViewAllJobs"
+
 //Note that the dist folder is only generated
 //when you run the build command. During 
 //development, Vite uses in-memory compilation to
@@ -88,6 +89,14 @@ const App = () => {
       <div>
       <ViewAllJobs />
       </div>
+
+      {/*Now talking about states there are
+       component states of individual components
+       and then there is a global state which
+       belongs to the which relates to entire
+       app, so now we will see the component state
+       and change the state of the job component using
+       useState() hook*/}
     </>
   )
 }
