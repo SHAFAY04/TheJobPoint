@@ -1,8 +1,19 @@
-import Navbar from "./components/Navbar"
-import Hero from "./components/Hero"
-import HomeCards from "./components/HomeCards"
-import JobListing from "./components/JobListing"
-import ViewAllJobs from "./components/ViewAllJobs"
+import Error from './pages/ErrorPage'
+import Jobspage from './pages/jobspage'
+import MainLayout from './layouts/MainLayout'
+import Homepage from './pages/homepage'
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'
+
+const router = createBrowserRouter(createRoutesFromElements(
+  //LAYOUTS
+  //okay so we use layouts for mostly used components like nav bar like this we just wrap all the child routes inside the layout route and when we do this we have to use outlet in the layout file to display the child routes and you can see that in the MainLayout.tsx
+<Route path='/' element={<MainLayout/>}>
+<Route index element={<Homepage />}/>
+<Route path='/jobs' element={<Jobspage/>}/>
+<Route path='*' element={<Error/>}/>
+  </Route>))
+
+
 
 //Note that the dist folder is only generated
 //when you run the build command. During 
@@ -13,7 +24,7 @@ import ViewAllJobs from "./components/ViewAllJobs"
 //if you're in tsx i.e; the return div of the
 //component you cant right normal comments instead
 //you'll comment like this 
-{/* LIKE THIS */ }
+// {/* LIKE THIS */ }
 
 //create variables here its basic ts out here
 //while in the return of a component its all tsx
@@ -46,6 +57,7 @@ const App = () => {
     //but you can do this if you want 2 components
     <>
     
+      <RouterProvider router={router} />
       {/*to put inline css one you use 2 {} */}
       <div style={{ color: 'red' }} className='text-5xl underline'>Hello {name}</div>
       <br></br>
@@ -76,19 +88,18 @@ const App = () => {
         them into different files and import them
         like we are importing our navbar on the 
         top of the page  */}
-      <Navbar />
-    { /*now we can pass in props to a component
+      {/* <Navbar /> */}
+      { /*now we can pass in props to a component
       //which will be its attributes*/}
-    {/*the reactNode element needs to be in between
+      {/*the reactNode element needs to be in between
       the two html tags of that component*/}
-      <Hero title='React Props' subtitle="THIS IS TEST SUBTITLE">
+      {/* <Hero title='React Props' subtitle="THIS IS TEST SUBTITLE">
        Now this is the reactNode, this is how you pass it to the component
       </Hero>
       <HomeCards />
       <JobListing/>
-      <div>
-      <ViewAllJobs />
-      </div>
+      <ViewAllJobs /> */}
+
 
       {/*Now talking about states there are
        component states of individual components
@@ -96,7 +107,9 @@ const App = () => {
        belongs to the which relates to entire
        app, so now we will see the component state
        and change the state of the job component using
-       useState() hook*/}
+       useState() hook and you can see it in the
+       JobListing component*/}
+
     </>
   )
 }

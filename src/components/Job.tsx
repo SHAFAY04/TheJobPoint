@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 import { useState } from 'react';
 //npm i react-icons
 import { FaMapMarker } from 'react-icons/fa'
+import { Link } from 'react-router-dom';
 
 interface JobKeys {
   id:number;
@@ -48,12 +49,12 @@ const Job = ({ job }: jobProps) => {
                       <FaMapMarker className='inline mr-2'/>
                       {job.location}
                     </div>
-                    <a
-                      href={`/job/${job.id}`}
+                    <Link
+                      to={`/job/${job.id}`}
                       className="py-3 h-[42px] bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-md text-center text-sm"
                     >
                       Read More
-                    </a>
+                    </Link>
                   </div>
                 </div>
       
