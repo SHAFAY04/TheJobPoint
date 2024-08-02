@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  /* Custom CSS classes for React Transition Group */
+  .fade-enter {
+    @apply opacity-0 scale-90;
+  }
+  .fade-enter-active {
+    @apply animation-fadeIn;
+  }
+  .fade-exit {
+    @apply opacity-100 scale-100;
+  }
+  .fade-exit-active {
+    @apply animation-fadeOut;
+  }
+}

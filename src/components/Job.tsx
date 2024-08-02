@@ -50,7 +50,7 @@ const Job = ({ job }: jobProps) => {
                       {job.location}
                     </div>
                     <Link
-                      to={`/job/${job.id}`}
+                      to={`/jobs/${job.id}`}
                       className="py-3 h-[42px] bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-md text-center text-sm"
                     >
                       Read More

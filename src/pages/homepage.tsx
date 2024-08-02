@@ -12,7 +12,7 @@ const homepage = () => {
      Now this is the reactNode, this is how you pass it to the component
       </Hero>
       <HomeCards />
-      <JobListing/>
+      <JobListing isHome={true}/>
       <ViewAllJobs />
     </>
   )

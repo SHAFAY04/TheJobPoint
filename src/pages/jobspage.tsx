@@ -1,8 +1,11 @@
 import React from 'react'
+import JobListing from '../components/JobListing'
 
 const jobspage = () => {
   return (
-    <div>jobspage</div>
+    <div className='px-5 py-5'>
+    <JobListing isHome={false}/>
+    </div>
   )
 }
 

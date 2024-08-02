@@ -1,8 +1,10 @@
-import Error from './pages/ErrorPage'
+import Errorpage from './pages/ErrorPage'
 import Jobspage from './pages/jobspage'
 import MainLayout from './layouts/MainLayout'
 import Homepage from './pages/homepage'
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider, useLocation } from 'react-router-dom'
+import JobPage,{JobLoader} from './pages/JobPage'
+import './index.css'; // Include this for custom Tailwind styl
 
 const router = createBrowserRouter(createRoutesFromElements(
   //LAYOUTS
@@ -10,8 +12,12 @@ const router = createBrowserRouter(createRoutesFromElements(
 <Route path='/' element={<MainLayout/>}>
 <Route index element={<Homepage />}/>
 <Route path='/jobs' element={<Jobspage/>}/>
-<Route path='*' element={<Error/>}/>
-  </Route>))
+
+{/*the :id is dynamic its a variable for any id that you pass in for examples job/1 */}
+{/*here we are passing in that dataloader */}
+<Route path='jobs/:id' element={<JobPage/>} loader={JobLoader}/>
+<Route path='*' element={<Errorpage/>}/>
+</Route>))
 
 
 
@@ -42,6 +48,7 @@ let styles = {
 //like the following
 
 const App = () => {
+
   return (
     //this html like syntax is TSX not html
     //we use classNameName in TSX because class is
@@ -56,28 +63,28 @@ const App = () => {
 
     //but you can do this if you want 2 components
     <>
+        <RouterProvider router={router} />
     
-      <RouterProvider router={router} />
       {/*to put inline css one you use 2 {} */}
-      <div style={{ color: 'red' }} className='text-5xl underline'>Hello {name}</div>
+      {/* <div style={{ color: 'red' }} className='text-5xl underline'>Hello {name}</div>
       <br></br>
       <p style={styles}>The sum of {x} and {y} is: </p>
       <p>{x + y}</p>
       <br></br>
-      <ul>
+      <ul> */}
         {/*you cant do names.foreach here because
       //React expects a reactNode while the foreach
       //method returns void so you gotta use map*/}
-        {names.map((name, index) => (
+        {/* {names.map((name, index) => (
           //each list item must have unique keys
           <li key={index}>{name}</li>
         ))}
-      </ul>
+      </ul> */}
       {/*react supports single liners we can't
         use an if statement so we use ternary*/}
-      {loggedIn ? <h1>HELLO MEMBER</h1> : ''}
+      {/* {loggedIn ? <h1>HELLO MEMBER</h1> : ''} */}
       {/*or you can simply do this: */}
-      {loggedIn && <h1>HELLO MEMBER</h1>}
+      {/* {loggedIn && <h1>HELLO MEMBER</h1>} */}
 
       {/*NOW JUST COPYING SOME TAILWIND UI BY
           BRAD FOR NOW TO LEARN REACT*/}
