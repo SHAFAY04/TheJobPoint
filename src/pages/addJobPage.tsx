@@ -23,15 +23,15 @@ interface Job{
   }
   
 const addJobPage = ({addJobSubmit}:AddJobPageProps) => {
-    let [type, setType] =useState('Full-Time')
-const [ListingName, setListingName] =useState ('')
-const [Description, setDescription] =useState ('')
-const [Salary, setSalary] =useState ('Under $50K')
-const [location, setlocation] =useState ('')
-const [CompanyName, setCompanyName] =useState ('')
-const [CompanyDescription, setCompanyDescription] =useState ('')
-const [ContactEmail, setContactEmail] =useState ('')
-const [ContactPhone, setContactPhone] =useState ('')
+    let [type, setType] =useState<string>('Full-Time')
+const [ListingName, setListingName] =useState<string> ('')
+const [Description, setDescription] =useState<string> ('')
+const [Salary, setSalary] =useState<string> ('Under $50K')
+const [location, setlocation] =useState<string> ('')
+const [CompanyName, setCompanyName] =useState<string> ('')
+const [CompanyDescription, setCompanyDescription] =useState<string> ('')
+const [ContactEmail, setContactEmail] =useState<string> ('')
+const [ContactPhone, setContactPhone] =useState<string> ('')
 
 const navigate = useNavigate();
 //type of form events is not just Event its form Event

@@ -29,7 +29,7 @@ const JobListing = ({isHome}:JobListingProps) => {
 //fetching Jobs from jobs.json
 
   const [jobs,setjobs]=useState<Job[]>([])
-const [loading,setloading]=useState(true)
+const [loading,setloading]=useState<boolean>(true)
 
 //useEffect provides a sideEffect to a component on its render so what we're doing rightnow is by using useEffect we fetch on rendering of the component so basically when the component renders it has a sideeffect and in our situation it has a sideeffect of fetching the data meanwhile if you talk about reactSuspense it renders while fetching
 //now the useEffect hook has 2 arguments first one is a function that contains your sideEffect logic and the second one is the dependency array so for example if we have [name] in our dependency array the useEffect is gonna run every time the name changes

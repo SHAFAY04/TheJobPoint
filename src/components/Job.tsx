@@ -16,7 +16,7 @@ type jobProps = { job: JobKeys }
 
 const Job = ({ job }: jobProps) => {
 
-  let [showFullDescription,setshowFullDescription]= useState(false)
+  let [showFullDescription,setshowFullDescription]= useState<boolean>(false)
   let descrpition= job.description
 
   if(!showFullDescription){

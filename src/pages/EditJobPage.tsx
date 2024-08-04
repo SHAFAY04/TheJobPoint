@@ -28,15 +28,15 @@ const EditJobPage = ({editJob}:editJobProps) =>  {
   // Now you can use the id variable
   const navigate=useNavigate()
 
-  let [type, setType] = useState(job?.type || 'Full-Time');
-  const [ListingName, setListingName] = useState(job?.title || '');
-  const [Description, setDescription] = useState(job?.description || '');
-  const [Salary, setSalary] = useState(job?.salary || 'Under $50K');
-  const [location, setlocation] = useState(job?.location || '');
-  const [CompanyName, setCompanyName] = useState(job?.company.name || '');
-  const [CompanyDescription, setCompanyDescription] = useState(job?.company.description || '');
-  const [ContactEmail, setContactEmail] = useState(job?.company.contactEmail || '');
-  const [ContactPhone, setContactPhone] = useState(job?.company.contactPhone || '');
+  let [type, setType] = useState<string>(job?.type || 'Full-Time');
+  const [ListingName, setListingName] = useState<string>(job?.title || '');
+  const [Description, setDescription] = useState<string>(job?.description || '');
+  const [Salary, setSalary] = useState<string>(job?.salary || 'Under $50K');
+  const [location, setlocation] = useState<string>(job?.location || '');
+  const [CompanyName, setCompanyName] = useState<string>(job?.company.name || '');
+  const [CompanyDescription, setCompanyDescription] = useState<string>(job?.company.description || '');
+  const [ContactEmail, setContactEmail] = useState<string>(job?.company.contactEmail || '');
+  const [ContactPhone, setContactPhone] = useState<string>(job?.company.contactPhone || '');
 
   const submitEditedJob = (e: FormEvent) => {
     e.preventDefault();
