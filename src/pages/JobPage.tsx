@@ -38,8 +38,10 @@ const JobLoader: LoaderFunction = async ({ params }) => {
   }
 };
 
-
-const JobPage = () => {
+interface JobPageProps{
+  deleteJob:(id: number)=>Promise<void>
+}
+const JobPage = ({deleteJob}:JobPageProps) => {
 
   //to get the id from the route path i can normally use the usePrams hook its specifically designed for that purpose it can fetch all your prams in your path as in my case path='jobs/:id' my only pram is :id so i can do ,const { id } = useParams(); and easily get the id
 
@@ -87,7 +89,7 @@ const JobPage = () => {
                 </main>
                 <aside>
                   <JobCompanyInfo job={job} />
-                  <JobManage id={job.id} />
+                  <JobManage deleteJob={deleteJob} id={job.id} />
                 </aside>
               </div>
             </div>

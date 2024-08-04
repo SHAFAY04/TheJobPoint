@@ -5,20 +5,8 @@ import Homepage from './pages/homepage'
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider, useLocation } from 'react-router-dom'
 import JobPage,{JobLoader} from './pages/JobPage'
 import './index.css'; // Include this for custom Tailwind styl
-
-const router = createBrowserRouter(createRoutesFromElements(
-  //LAYOUTS
-  //okay so we use layouts for mostly used components like nav bar like this we just wrap all the child routes inside the layout route and when we do this we have to use outlet in the layout file to display the child routes and you can see that in the MainLayout.tsx
-<Route path='/' element={<MainLayout/>}>
-<Route index element={<Homepage />}/>
-<Route path='/jobs' element={<Jobspage/>}/>
-
-{/*the :id is dynamic its a variable for any id that you pass in for examples job/1 */}
-{/*here we are passing in that dataloader */}
-<Route path='jobs/:id' element={<JobPage/>} loader={JobLoader}/>
-<Route path='*' element={<Errorpage/>}/>
-</Route>))
-
+import AddJobPage from './pages/addJobPage'
+import EditJobPage from './pages/EditJobPage'
 
 
 //Note that the dist folder is only generated
@@ -48,6 +36,74 @@ let styles = {
 //like the following
 
 const App = () => {
+//we will create all the add, edit, delete methods here
+interface Job{
+ 
+  type: string;
+  title: string;
+  description: string;
+  salary: string;
+  location: string;
+  company:{
+    name:string,
+    description:string,
+    contactPhone:string,
+    contactEmail:string,
+  }
+}
+
+const addJob=async(job:Job)=>{
+
+  let res= await fetch('/api/jobs',{
+    method:'POST',
+    headers:{
+      'Content-type':'application/json',
+    },
+    body:JSON.stringify(job)
+  })
+}
+
+const deleteJob= async(id:number)=>{
+
+  const res= await fetch(`/api/jobs/${id}`,{
+    method:'DELETE'
+  })
+ 
+}
+
+const editJob=async(id:any,editedJob:Job)=>{
+
+    const res= await fetch(`/api/jobs/${id}`,{
+      
+      method:'PUT',
+      headers:{
+
+        'Accept':'application/json, text/plain, */*',
+        'Content-type':'application/json'
+      },
+      body:JSON.stringify(
+          editedJob
+      )
+    
+
+    })
+}
+
+const router = createBrowserRouter(createRoutesFromElements(
+  //LAYOUTS
+  //okay so we use layouts for mostly used components like nav bar like this we just wrap all the child routes inside the layout route and when we do this we have to use outlet in the layout file to display the child routes and you can see that in the MainLayout.tsx
+<Route path='/' element={<MainLayout/>}>
+<Route index element={<Homepage />}/>
+<Route path='/jobs' element={<Jobspage/>}/>
+
+{/*the :id is dynamic its a variable for any id that you pass in for examples job/1 */}
+{/*here we are passing in that dataloader */}
+<Route path='jobs/:id' element={<JobPage deleteJob={deleteJob}/>} loader={JobLoader}/>
+<Route path='/edit-job/:id'element={<EditJobPage editJob={editJob}/>} loader={JobLoader}/>
+<Route path='/add-job' element={<AddJobPage addJobSubmit={addJob}/>}/>
+<Route path='*' element={<Errorpage/>}/>
+</Route>))
+
 
   return (
     //this html like syntax is TSX not html
