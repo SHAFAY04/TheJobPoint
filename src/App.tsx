@@ -7,6 +7,8 @@ import JobPage,{JobLoader} from './pages/JobPage'
 import './index.css'; // Include this for custom Tailwind styl
 import AddJobPage from './pages/addJobPage'
 import EditJobPage from './pages/EditJobPage'
+import { useEffect } from 'react'
+import HooksPage from './pages/hooksPage'
 
 
 //Note that the dist folder is only generated
@@ -36,10 +38,13 @@ let styles = {
 //like the following
 
 const App = () => {
+  useEffect(()=>{
+    console.log('mounting')
+
+  },[])
 //we will create all the add, edit, delete methods here
 interface Job{
  
-  type: string;
   title: string;
   description: string;
   salary: string;
@@ -101,6 +106,7 @@ const router = createBrowserRouter(createRoutesFromElements(
 <Route path='jobs/:id' element={<JobPage deleteJob={deleteJob}/>} loader={JobLoader}/>
 <Route path='/edit-job/:id'element={<EditJobPage editJob={editJob}/>} loader={JobLoader}/>
 <Route path='/add-job' element={<AddJobPage addJobSubmit={addJob}/>}/>
+<Route path='/hooks' element={<HooksPage/>}/>
 <Route path='*' element={<Errorpage/>}/>
 </Route>))
 
