@@ -7,8 +7,9 @@ import JobPage,{JobLoader} from './pages/JobPage'
 import './index.css'; // Include this for custom Tailwind styl
 import AddJobPage from './pages/addJobPage'
 import EditJobPage from './pages/EditJobPage'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import HooksPage from './pages/hooksPage'
+import { createContext } from 'react'
 
 
 //Note that the dist folder is only generated
@@ -33,15 +34,11 @@ let styles = {
   color: 'green'
 }
 
+//sending user prop to hooksPage without Prop drilling!
+//you have to provide a default value which will be used only if this userContext is used in a component without wrapping that component in a provider!
+//and you need to export this context
+export const userContext=createContext('ANTHONY')
 
-//use rafce to create a react component!
-//like the following
-
-const App = () => {
-  useEffect(()=>{
-    console.log('mounting')
-
-  },[])
 //we will create all the add, edit, delete methods here
 interface Job{
  
@@ -75,6 +72,7 @@ const deleteJob= async(id:number)=>{
   })
  
 }
+export const deleteJobContext=createContext(deleteJob)
 
 const editJob=async(id:any,editedJob:Job)=>{
 
@@ -93,6 +91,20 @@ const editJob=async(id:any,editedJob:Job)=>{
 
     })
 }
+export const editJobContext=createContext(editJob)
+
+
+//use rafce to create a react component!
+//like the following
+
+const App = () => {
+  useEffect(()=>{
+    console.log('mounting')
+
+  },[])
+
+  const [user,setUser]=useState('DAVID')
+
 
 const router = createBrowserRouter(createRoutesFromElements(
   //LAYOUTS
@@ -104,9 +116,9 @@ const router = createBrowserRouter(createRoutesFromElements(
 {/*the :id is dynamic its a variable for any id that you pass in for examples job/1 */}
 {/*here we are passing in that dataloader */}
 <Route path='jobs/:id' element={<JobPage deleteJob={deleteJob}/>} loader={JobLoader}/>
-<Route path='/edit-job/:id'element={<EditJobPage editJob={editJob}/>} loader={JobLoader}/>
+<Route path='/edit-job/:id'element={<EditJobPage />} loader={JobLoader}/>
 <Route path='/add-job' element={<AddJobPage addJobSubmit={addJob}/>}/>
-<Route path='/hooks' element={<HooksPage/>}/>
+<Route path='/hooks' element={<userContext.Provider value={user}><HooksPage/></userContext.Provider>}/>
 <Route path='*' element={<Errorpage/>}/>
 </Route>))
 

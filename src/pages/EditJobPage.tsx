@@ -1,7 +1,8 @@
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useContext, useState } from 'react'
 import { useLoaderData, useLocation, useNavigate, useParams } from 'react-router-dom'
 import Job from '../components/Job';
 import { toast } from 'react-toastify';
+import { editJobContext } from '../App';
 
 interface Job {
   type: string;
@@ -17,11 +18,10 @@ interface Job {
   };
 }
 
-interface editJobProps {
-  editJob: (id: any, editedJob: Job) => Promise<void>;
-}
 
-const EditJobPage = ({editJob}:editJobProps) =>  {
+const EditJobPage = () =>  {
+
+  const editJob= useContext(editJobContext)
   const job = useLoaderData() as Job | null;
   const { id } = useParams();
 

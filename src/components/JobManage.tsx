@@ -1,14 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { deleteJobContext } from '../App'
 
-interface jobManageProps{
-  id:number,
-  deleteJob:(id: number)=>Promise<void>
 
-}
+const JobManage = ({id}:{id:number}) => {
 
-const JobManage = ({id,deleteJob}:jobManageProps) => {
+  const deleteJob= useContext(deleteJobContext) 
+
   const navigate=useNavigate()
 
   function onButtonDelete() {

@@ -89,7 +89,7 @@ const JobPage = ({deleteJob}:JobPageProps) => {
                 </main>
                 <aside>
                   <JobCompanyInfo job={job} />
-                  <JobManage deleteJob={deleteJob} id={job.id} />
+                  <JobManage id={job.id} />
                 </aside>
               </div>
             </div>
