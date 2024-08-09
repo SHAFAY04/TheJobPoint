@@ -17,6 +17,7 @@
     "react-router-dom": "^6.25.1",
     "react-spinners": "^0.14.1",
     "react-toastify": "^10.0.5",
+    "react-toggle-dark-mode": "^1.1.1",
     "react-transition-group": "^4.4.5",
     "reactlearning": "file:"
   },

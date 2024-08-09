@@ -7,7 +7,7 @@ import JobPage,{JobLoader} from './pages/JobPage'
 import './index.css'; // Include this for custom Tailwind styl
 import AddJobPage from './pages/addJobPage'
 import EditJobPage from './pages/EditJobPage'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import HooksPage from './pages/hooksPage'
 import { createContext } from 'react'
 
@@ -93,19 +93,13 @@ const editJob=async(id:any,editedJob:Job)=>{
 }
 export const editJobContext=createContext(editJob)
 
-
+ 
 //use rafce to create a react component!
 //like the following
 
 const App = () => {
-  useEffect(()=>{
-    console.log('mounting')
-
-  },[])
-
   const [user,setUser]=useState('DAVID')
-
-
+  
 const router = createBrowserRouter(createRoutesFromElements(
   //LAYOUTS
   //okay so we use layouts for mostly used components like nav bar like this we just wrap all the child routes inside the layout route and when we do this we have to use outlet in the layout file to display the child routes and you can see that in the MainLayout.tsx

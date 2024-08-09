@@ -1,5 +1,7 @@
-import React, {  useCallback, useEffect, useMemo, useReducer, useRef, useState, useContext } from 'react'
+import React, {  useCallback, useEffect, useMemo, useReducer, useRef, useState, useContext, ChangeEvent } from 'react'
 import { userContext } from '../App'
+import { useTransition,startTransition } from 'react'
+import Spinners from '../components/spinners'
 
 const hooksPage = () => {
 
@@ -100,6 +102,7 @@ const reducer=(state:typeof initState, action:reducerAction):typeof initState=>{
 
     
     }
+    //USECONTEXT HOOK!
     const [user,setUser]=useState('')
     const useContextValue= useContext(userContext)
     function getPropFromAppWithoutDrilling(): void {
@@ -108,10 +111,57 @@ const reducer=(state:typeof initState, action:reducerAction):typeof initState=>{
         setUser(useContextValue)
     }
 
+    //USEREF() HOOK!
+    const [count,setCount]=useState(0)
+    const changeStateWithUseState=()=>{
+
+        setCount(count+1)
+    }
+    const countref=useRef(0)
+    const changeStateWithUseRef=()=>{
+
+        countref.current++
+    }
+
+    const ref=useRef<HTMLInputElement|null>(null)
+    const focusOnInput=()=>{
+
+        ref.current?.focus()
+    }
+
+    useEffect(()=>{
+
+        console.log('RE RENDERING !!!')
+    })
+
+    //USETRANSITION HOOK!
+
+    const [isPending,startTransition]=useTransition()
+    const [input,setInput]=useState('')
+    const[list,setList]=useState<string[]>([])
+    const renderlist=(e:ChangeEvent<HTMLInputElement>)=>{
+
+        setInput(e.target.value)
+        
+        startTransition(()=>{ const list:string[]=[]
+            const listSize=2000
+    
+            for (let i = 0; i < listSize; i++) {
+               
+                list.push(e.target.value)
+                
+            }
+            setList(list)
+    })
+       
+
+    }
+
+    
   return (
     
     <>
-    <div className='bg-emerald-300'>
+ 
         <div className='grid md:grid-cols-2 sm:grid-cols-1 m-auto gap-4 pt-16 pb-16 pl-6 pr-6 lg:px-40'>
             {/* USEMEMO HOOK()! */}
             <div className='p-5 shadow-lg bg-white '>
@@ -167,8 +217,38 @@ const reducer=(state:typeof initState, action:reducerAction):typeof initState=>{
                 
                 
             </div>
+            {/* USEREF HOOK()! */}
+            <div className='p-5 shadow-lg bg-white '>
+                <h2 className={`font-bold font-serif text-2xl mb-4 ${colorstate}`}>
+                    UseRef() Hook!
+                </h2>
+                <p className='font-mono italic mb-4'>One of the most common uses of useRef is to access and manipulate DOM elements directly.The difference between the useRef and useState hook is that when the state changes the useRef hook does not causes the component to reRender while on the other hand the useState hook makes the component to re-Render its used for storing mutable values that persist across renders, and avoiding re-renders when updating these values. one of its uses is given down below to focus on a dom element and the useEffect example is given up in the code where if you use useRef to change the state of a counter the Page wont re-render while if you use UseState to increase the counter the page will re-render every time uses:Timers,Intervals,Animations,focus,Transitions  </p>                
+                <p></p>
+                <input ref={ref} className='mb-4 p-2 rounder-md ' type="text" name="entertext" placeholder='Enter Some Text' id="entertext" />
+                <div className='flex inline-flex'>
+                <button className='p-3 mr-3 bg-emerald-200 hover:bg-emerald-400' onClick={focusOnInput}>focus On Input By useREF!</button>
+                <button className='p-3 mr-3 bg-emerald-200 hover:bg-emerald-400' onClick={changeStateWithUseState}>change State With useState!</button>
+                <button className='p-3 bg-emerald-200 hover:bg-emerald-400' onClick={changeStateWithUseRef}>change State With useREF!</button>
+
+                </div>
+            </div>
+            {/* USETRANSITION HOOK()! */}
+            <div className='p-5 shadow-lg bg-white '>
+                <h2 className={`font-bold font-serif text-2xl mb-4 ${colorstate}`}>
+                    UseTransition() Hook!
+                </h2>
+                <p className='font-mono italic mb-4'>UseTransition hook allows you to set the priority of an action to low just to avoid a very stuttering user experience it kind of breaks the operation into multiple renders and render the high priority action first
+                    for example in the following input box if you enter a lot of text very fastly it may take some time or it may stuttering while typing fastly or removing fasly because of this expensive action but if i use the useTransition hook on rendering the text the text box will behave smoothly, remember just to use this when you are having performance issues because of a too resource consuming process </p>                
+                
+                <input  onChange={renderlist} className='mb-4 p-2 rounder-md ' type="text" name="entertext" placeholder='Enter Some Text' id="entertext" />
+                {list.map((item,index)=>{return <div key={index}>{isPending?'loading': item}</div>})}
+                <div className='flex inline-flex justify-center'>
+                {/* <button className='p-3 mr-3 bg-emerald-200 hover:bg-emerald-400' onClick={focusOnInput}>focus On Input By useREF!</button>
+                <button className='p-3 mr-3 bg-emerald-200 hover:bg-emerald-400' onClick={changeStateWithUseState}>change State With useState!</button> */}
+
+                </div>
+            </div>
         </div>
-    </div>
     </>
   )
 }

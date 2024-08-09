@@ -1,12 +1,35 @@
-import React from 'react'
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import logo from '../assets/images/logo.png'
 import { NavLink } from 'react-router-dom'
+import ToggleDarkMode from './toggledarkmode'
+import useWindowResize from '../hooks/useWindowResize'
+import { FaMobile,FaTablet,FaLaptop, FaMobileAlt, FaTabletAlt } from 'react-icons/fa'
+import { FaMobileRetro, FaMobileScreen, FaTabletButton, FaTabletScreenButton } from 'react-icons/fa6'
 
 const Navbar = () => {
   interface LinkClassProps {
     isActive: boolean;
   }
   const linkCLass=({isActive}:LinkClassProps)=> isActive?' bg-black text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2':'text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2'
+  const[theme,setTheme]=useState('bg-black-300')
+  const prevThemeRef = useRef<string>();
+
+  useEffect(() => {
+    // Check if the theme has changed
+    if (prevThemeRef.current !== theme) {
+      if (document.body.classList.contains('bg-emerald-300')) {
+        document.body.classList.remove('bg-emerald-300');
+        document.body.classList.add('bg-black');
+      } else {
+        document.body.classList.add('bg-emerald-300');
+      }
+
+      // Update the previous theme reference
+      prevThemeRef.current = theme;
+    }
+  }, [theme]);
+
+  const {width}=useWindowResize()
   return (
     <>
       <nav className="bg-emerald-700 border-b border-emerald-500">
@@ -45,6 +68,8 @@ const Navbar = () => {
                     to="/hooks"
                     className={linkCLass}
                     >Hooks</NavLink>
+                      <button onClick={()=>theme==='bg-emerald-300'?setTheme('bg-black'):setTheme('bg-emerald-300')}><ToggleDarkMode /></button>
+                      {(width as number)<768?<FaMobileScreen className='text-4xl text-white'/>:(width as number)<1024?<FaTabletAlt className='text-4xl text-white'/>:<FaLaptop className='text-4xl text-white'/>}
                 </div>
               </div>
             </div>
