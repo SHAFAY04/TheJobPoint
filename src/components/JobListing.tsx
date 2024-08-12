@@ -3,6 +3,7 @@ import Job from './Job'
 //npm i react-spinners
 import Spinners from './spinners';
 import { useState,useEffect } from 'react';
+import useFetch from '../hooks/useFetch';
 
 
 interface Job {
