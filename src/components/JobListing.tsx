@@ -1,10 +1,13 @@
-import React, { ReactNode } from 'react'
+import React, { Dispatch, ReactNode } from 'react'
 import Job from './Job'
 //npm i react-spinners
 import Spinners from './spinners';
 import { useState,useEffect } from 'react';
 import useFetch from '../hooks/useFetch';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState,AppDispatch } from '../store';
+import { fetchJobs } from './jobSlice';
+import { AsyncThunkAction } from '@reduxjs/toolkit';
 
 interface Job {
   id:number;
@@ -29,43 +32,43 @@ const JobListing = ({isHome}:JobListingProps) => {
 
 //fetching Jobs from jobs.json
 
-  const [jobs,setjobs]=useState<Job[]>([])
-const [loading,setloading]=useState<boolean>(true)
+//   const [jobs,setjobs]=useState<Job[]>([])
+// const [loading,setloading]=useState<boolean>(true)
 
 //useEffect provides a sideEffect to a component on its render so what we're doing rightnow is by using useEffect we fetch on rendering of the component so basically when the component renders it has a sideeffect and in our situation it has a sideeffect of fetching the data meanwhile if you talk about reactSuspense it renders while fetching
 //now the useEffect hook has 2 arguments first one is a function that contains your sideEffect logic and the second one is the dependency array so for example if we have [name] in our dependency array the useEffect is gonna run every time the name changes
-useEffect(()=>{
+// useEffect(()=>{
 
 //using a timeout just to checkout the loading
 //spinner that i used 
-  setTimeout(()=>{
+  // setTimeout(()=>{
 
 
-  const fetchData= async()=>{
+  // const fetchData= async()=>{
 
     //we replaced the localhost:8000 by /api and we did it by using the concept of proxying you can see that in your viteconfig file
-    const apiUrl= isHome? '/api/jobs?_limit=3':'/api/jobs'
-    try {
+//     const apiUrl= isHome? '/api/jobs?_limit=3':'/api/jobs'
+//     try {
       
-    const res= await fetch(apiUrl)
-    const data= await res.json()
-    setjobs(data)
+//     const res= await fetch(apiUrl)
+//     const data= await res.json()
+//     setjobs(data)
     
-    } catch (error) {
+//     } catch (error) {
       
-      console.log('Error Fetching ',error)
-    }
-    finally{
+//       console.log('Error Fetching ',error)
+//     }
+//     finally{
       
-      setloading(false)
-    }
+//       setloading(false)
+//     }
 
     
-  }
-  fetchData()
-},1000)
+//   }
+//   fetchData()
+// },1000)
 //the empty[] makes sure it runs once if you dont add the [] it will be an endless loop
-},[])
+// },[])
 
 
 
@@ -73,7 +76,15 @@ useEffect(()=>{
   //but since we're using json-server we can limit
   //jobs to 3 by adding '?_limit=3' at the end of our url
   // let joblistings:Job[]= isHome?jobs.slice(0,3):jobs
- 
+  
+//using REDUX!
+const dispatch= useDispatch<AppDispatch>()
+const {jobs,loading,error}=useSelector((state:RootState)=>state.job)
+useEffect(()=>{
+
+  dispatch(fetchJobs(isHome))
+},[dispatch,isHome])
+
   return(
     <>
       {/* <!-- Browse Jobs --> */}

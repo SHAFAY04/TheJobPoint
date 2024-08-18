@@ -83,6 +83,62 @@
         "contactEmail": "contact@ipsumlorem.com",
         "contactPhone": "555-555-5555"
       }
+    },
+    {
+      "id": "9fe9",
+      "type": "Full-Time",
+      "title": "SALES REPRESENTATIVES!",
+      "description": "we need good english comunication skills personalls with good potential and idk whats this english im typing lol but yes we need english people",
+      "salary": "$80K - 90K",
+      "location": "Karachi,Pakistan",
+      "company": {
+        "name": "Shafay Solutions",
+        "description": "WE DANCE!",
+        "contactPhone": "03310219907",
+        "contactEmail": "lk@hv"
+      }
+    },
+    {
+      "type": "Remote",
+      "title": "HASEEB POYON",
+      "description": "we need software engineers",
+      "salary": "$150K - 175K",
+      "location": "LA, Illionios",
+      "company": {
+        "name": "LAMBORGHINI",
+        "description": "we have cars nigga!",
+        "contactPhone": "teesreme1110",
+        "contactEmail": "lambocity@ahsankhan"
+      },
+      "id": "a766"
+    },
+    {
+      "id": "8dcf",
+      "type": "Full-Time",
+      "title": "niggas needed",
+      "description": "wddddddddddddddddddd",
+      "salary": "$175K - $200K",
+      "location": "wdadawda",
+      "company": {
+        "name": "adawda",
+        "description": "dawdawd",
+        "contactPhone": "dad",
+        "contactEmail": "awdadawd@dqw"
+      }
+    },
+    {
+      "id": "buPk",
+      "type": "Full-Time",
+      "title": "wwd",
+      "description": "awd",
+      "salary": "Under $50K",
+      "location": "daw",
+      "company": {
+        "name": "LAMBORGHINI",
+        "description": "adawdaw",
+        "contactPhone": "03310219907",
+        "contactEmail": "blyat@emgial.com"
+      }
     }
   ]
 }

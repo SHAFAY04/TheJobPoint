@@ -3,7 +3,7 @@ import Jobspage from './pages/jobspage'
 import MainLayout from './layouts/MainLayout'
 import Homepage from './pages/homepage'
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider, useLocation } from 'react-router-dom'
-import JobPage,{JobLoader} from './pages/JobPage'
+import JobPage from './pages/JobPage'
 import './index.css'; // Include this for custom Tailwind styl
 import AddJobPage from './pages/addJobPage'
 import EditJobPage from './pages/EditJobPage'
@@ -109,11 +109,11 @@ const router = createBrowserRouter(createRoutesFromElements(
 
 {/*the :id is dynamic its a variable for any id that you pass in for examples job/1 */}
 {/*here we are passing in that dataloader */}
-<Route path='jobs/:id' element={<JobPage deleteJob={deleteJob}/>} loader={JobLoader}/>
-<Route path='/edit-job/:id'element={<EditJobPage />} loader={JobLoader}/>
-<Route path='/add-job' element={<AddJobPage addJobSubmit={addJob}/>}/>
+<Route path='jobs/:id' element={<JobPage />} />
+<Route path='/edit-job/:id'element={<EditJobPage />}/>
+<Route path='/add-job' element={<AddJobPage/>}/>
 <Route path='/hooks' element={<userContext.Provider value={user}><HooksPage/></userContext.Provider>}/>
-<Route path='*' element={<Errorpage/>}/>
+<Route path='*' element={<Errorpage error={'PAGE NOT FOUND!'}/>}/>
 </Route>))
 
 
