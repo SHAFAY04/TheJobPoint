@@ -8,9 +8,8 @@ import ViewAllJobs from "../components/ViewAllJobs"
 const homepage = () => {
   return (
     <>
-     <Hero title='React Props' subtitle="THIS IS TEST SUBTITLE">
-     Now this is the reactNode, this is how you pass it to the component
-      </Hero>
+     <Hero title='React Jobs' subtitle="THIS IS TEST SUBTITLE">
+Your All in One React Jobs Solution!      </Hero>
       <HomeCards />
       <JobListing isHome={true}/>
       <ViewAllJobs />

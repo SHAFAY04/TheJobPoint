@@ -10,9 +10,11 @@ import { AppDispatch, RootState } from '../store';
 import spinners from '../components/spinners';
 import Spinners from '../components/spinners';
 import Error from './ErrorPage';
+import { useEditJobMutation, useGetJobQuery } from '../api/apiSlice';
 
 
 interface Job {
+  id:string|undefined,
   type: string;
   title: string;
   description: string;
@@ -29,27 +31,48 @@ interface Job {
 
 const EditJobPage = () => {
 
-  const job = useLoaderData() as Job | null;
   const { id } = useParams();
+
 
   // Now you can use the id variable
   const navigate = useNavigate()
+  //USING REDUX!
+  // const dispatch = useDispatch<AppDispatch>()
+  // const { loading, error } = useSelector((state: RootState) => state.job)
 
-  let [type, setType] = useState<string>(job?.type || 'Full-Time');
-  const [ListingName, setListingName] = useState<string>(job?.title || '');
-  const [Description, setDescription] = useState<string>(job?.description || '');
-  const [Salary, setSalary] = useState<string>(job?.salary || 'Under $50K');
-  const [location, setlocation] = useState<string>(job?.location || '');
-  const [CompanyName, setCompanyName] = useState<string>(job?.company.name || '');
-  const [CompanyDescription, setCompanyDescription] = useState<string>(job?.company.description || '');
-  const [ContactEmail, setContactEmail] = useState<string>(job?.company.contactEmail || '');
-  const [ContactPhone, setContactPhone] = useState<string>(job?.company.contactPhone || '');
-  const dispatch = useDispatch<AppDispatch>()
+  //USING RTK QUERY!
+  const [editJob, { isLoading: isEditLoading, isError: isEditError, error: editError }] = useEditJobMutation(); 
+   const [showError,setShowError]=useState(false)
+   const { data: job, isLoading: isGetLoading, isError: isGetError, error: getError } = useGetJobQuery(id);
 
+   const [type, setType] = useState<string>('Full-Time');
+   const [ListingName, setListingName] = useState<string>('');
+   const [Description, setDescription] = useState<string>('');
+   const [Salary, setSalary] = useState<string>('Under $50K');
+   const [location, setLocation] = useState<string>('');
+   const [CompanyName, setCompanyName] = useState<string>('');
+   const [CompanyDescription, setCompanyDescription] = useState<string>('');
+   const [ContactEmail, setContactEmail] = useState<string>('');
+   const [ContactPhone, setContactPhone] = useState<string>('');
+ 
+   useEffect(() => {
+     if (job) {
+       setType(job.type || 'Full-Time');
+       setListingName(job.title || '');
+       setDescription(job.description || '');
+       setSalary(job.salary || 'Under $50K');
+       setLocation(job.location || '');
+       setCompanyName(job.company.name || '');
+       setCompanyDescription(job.company.description || '');
+       setContactEmail(job.company.contactEmail || '');
+       setContactPhone(job.company.contactPhone || '');
+     }
+   }, [job]);
   const submitEditedJob = (e: FormEvent) => {
     e.preventDefault();
 
     const editedJob: Job = {
+      id:id,
       type: type,
       title: ListingName,
       description: Description,
@@ -63,54 +86,54 @@ const EditJobPage = () => {
       },
     };
 
-    dispatch(jobEdit({ newJob: editedJob, id: id }))
+    // dispatch(jobEdit({ newJob: editedJob, id: id }))
+    editJob({editedJob,id})
     setFormSubmitted(true)
   };
 
-  const [pending, setPending] = useState(false)
-  const [rejected, setRejected] = useState(false)
   const [formSubmitted, setFormSubmitted] = useState(false)
-  const { loading, error } = useSelector((state: RootState) => state.job)
 
 
   useEffect(() => {
-
-    if (loading && !error && formSubmitted) {
-
-      setPending(true)
-      setRejected(false)
+    console.log(id)
+    if(formSubmitted){
+    if (isEditLoading) {
+      toast.info('Loading!')
     }
-  }, [error, loading, formSubmitted])
-  useEffect(() => {
+    else if (isEditError) {
 
-    if (!loading && !error && formSubmitted) {
-
-      setPending(false)
-      setRejected(false)
+      setTimeout(()=>{
+        toast.dismiss
+        toast.error('status' in editError? editError.status:editError.message)
+        setShowError(true)
+  
+      },2000)
+    }
+    else{
       toast.success('EDITED JOB SUCCESFULLY!')
-      return navigate('/jobs')
+      setTimeout(()=>{
+        return navigate('/jobs')
+      },200)
+      
     }
-  }, [error, loading, formSubmitted])
-  useEffect(() => {
-
-    if (!loading && error && formSubmitted) {
-
-      setPending(false)
-      toast.error(error)
-      setRejected(true)
-
-    }
-  }, [error, loading, formSubmitted])
-
+  }
+  }, [isEditError, isEditLoading, formSubmitted])
+  
+ 
   return (
     <>
-    {formSubmitted ? (
-        pending ? (
-          <Spinners loading={loading} />
-        ) : rejected ? (
-          <Error error={error} />
-        ) : null // No need to handle success here as navigate will take care of it
-      ) : (
+      {isGetLoading ? (
+        <Spinners loading={true} />
+      ) : isGetError ? (
+        <Error error={getError} />
+      ) : job ? (
+        formSubmitted ? (
+          showError !== true ? (
+            <Spinners loading={true} />
+          ) : isEditError ? (
+            <Error error={editError} />
+          ) : null
+        ) : (
           <div className="container m-auto py-24">
             <div className="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0 lg:w-[800px] lg:mx-96">
               <form onSubmit={submitEditedJob}>
@@ -133,7 +156,7 @@ const EditJobPage = () => {
                     <option value="Internship">Internship</option>
                   </select>
                 </div>
-
+  
                 <div className="mb-4">
                   <label htmlFor="title" className="block text-gray-700 font-bold mb-2">
                     Job Listing Name
@@ -149,7 +172,7 @@ const EditJobPage = () => {
                     onChange={(e) => setListingName(e.target.value)}
                   />
                 </div>
-
+  
                 <div className="mb-4">
                   <label htmlFor="description" className="block text-gray-700 font-bold mb-2">
                     Description
@@ -165,7 +188,7 @@ const EditJobPage = () => {
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </div>
-
+  
                 <div className="mb-4">
                   <label htmlFor="salary" className="block text-gray-700 font-bold mb-2">
                     Salary
@@ -191,7 +214,7 @@ const EditJobPage = () => {
                     <option value="Over $200K">Over $200K</option>
                   </select>
                 </div>
-
+  
                 <div className="mb-4">
                   <label htmlFor="location" className="block text-gray-700 font-bold mb-2">
                     Location
@@ -204,12 +227,12 @@ const EditJobPage = () => {
                     className="border rounded w-full py-2 px-3 mb-2"
                     placeholder="Company Location"
                     required
-                    onChange={(e) => setlocation(e.target.value)}
+                    onChange={(e) => setLocation(e.target.value)}
                   />
                 </div>
-
+  
                 <h3 className="text-2xl mb-5">Company Info</h3>
-
+  
                 <div className="mb-4">
                   <label htmlFor="company" className="block text-gray-700 font-bold mb-2">
                     Company Name
@@ -225,7 +248,7 @@ const EditJobPage = () => {
                     onChange={(e) => setCompanyName(e.target.value)}
                   />
                 </div>
-
+  
                 <div className="mb-4">
                   <label htmlFor="company_description" className="block text-gray-700 font-bold mb-2">
                     Company Description
@@ -241,7 +264,7 @@ const EditJobPage = () => {
                     onChange={(e) => setCompanyDescription(e.target.value)}
                   />
                 </div>
-
+  
                 <div className="mb-4">
                   <label htmlFor="contact_email" className="block text-gray-700 font-bold mb-2">
                     Contact Email
@@ -257,7 +280,7 @@ const EditJobPage = () => {
                     onChange={(e) => setContactEmail(e.target.value)}
                   />
                 </div>
-
+  
                 <div className="mb-4">
                   <label htmlFor="contact_phone" className="block text-gray-700 font-bold mb-2">
                     Contact Phone
@@ -272,12 +295,11 @@ const EditJobPage = () => {
                     onChange={(e) => setContactPhone(e.target.value)}
                   />
                 </div>
-
+  
                 <div>
                   <button
                     className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
                     type="submit"
-
                   >
                     Edit Job
                   </button>
@@ -286,9 +308,10 @@ const EditJobPage = () => {
             </div>
           </div>
         )
-      }
+      ) : null}
     </>
-  )
+  );
+  
 
 };
 

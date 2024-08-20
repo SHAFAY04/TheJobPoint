@@ -5,7 +5,7 @@ import { FaMapMarker } from 'react-icons/fa'
 import { Link } from 'react-router-dom'; 
 
 interface JobKeys {
-  id:number;
+  id:string;
   type: string;
   title: string;
   description: string;

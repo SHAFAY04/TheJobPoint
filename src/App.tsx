@@ -113,7 +113,7 @@ const router = createBrowserRouter(createRoutesFromElements(
 <Route path='/edit-job/:id'element={<EditJobPage />}/>
 <Route path='/add-job' element={<AddJobPage/>}/>
 <Route path='/hooks' element={<userContext.Provider value={user}><HooksPage/></userContext.Provider>}/>
-<Route path='*' element={<Errorpage error={'PAGE NOT FOUND!'}/>}/>
+<Route path='*' element={<Errorpage error={{ errorString: 'PAGE NOT FOUND' }}/>}/>
 </Route>))
 
 

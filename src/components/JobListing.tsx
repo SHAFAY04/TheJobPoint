@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState,AppDispatch } from '../store';
 import { fetchJobs } from './jobSlice';
 import { AsyncThunkAction } from '@reduxjs/toolkit';
+import { useGetJobsQuery } from '../api/apiSlice';
+import Error from '../pages/ErrorPage';
 
 interface Job {
   id:number;
@@ -78,35 +80,48 @@ const JobListing = ({isHome}:JobListingProps) => {
   // let joblistings:Job[]= isHome?jobs.slice(0,3):jobs
   
 //using REDUX!
-const dispatch= useDispatch<AppDispatch>()
-const {jobs,loading,error}=useSelector((state:RootState)=>state.job)
-useEffect(()=>{
+// const dispatch= useDispatch<AppDispatch>()
+// const {jobs,loading,error}=useSelector((state:RootState)=>state.job)
+// useEffect(()=>{
 
-  dispatch(fetchJobs(isHome))
-},[dispatch,isHome])
+//   dispatch(fetchJobs(isHome))
+// },[dispatch,isHome])
+
+//USING RTK QUERY!
+const {
+
+  data :jobs,
+  isLoading,
+  isError,
+  isSuccess,
+  error,
+
+}= useGetJobsQuery(undefined)
 
   return(
-    <>
-      {/* <!-- Browse Jobs --> */}
-      <section className="bg-emerald-400 px-4 py-10">
-        <div className="container-xl lg:container m-auto">
-          <h2 className="text-3xl font-bold text-emerald-600 mb-6 text-center">
-           {isHome?'Recent Jobs':'All Jobs'}
-          </h2>
-          {loading ? (
-  <Spinners loading={loading}/>
-) : (
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-    {jobs.map((job) => (
-      <Job key={job.id} job={job} />
-    ))}
-          </div>
-)}
-            
+<>
+  {/* <!-- Browse Jobs --> */}
+  <section className="bg-emerald-400 px-4 py-10">
+    <div className="container-xl lg:container m-auto">
+      <h2 className="text-3xl font-bold text-emerald-600 mb-6 text-center">
+        {isHome ? 'Recent Jobs' : 'All Jobs'}
+      </h2>
 
+      {isLoading ? (
+        <Spinners loading={isLoading} />
+      ) : isError ? (
+        <Error error={error} />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {jobs?jobs.map((job) => (
+            <Job key={job.id} job={job} />
+          )):<p>NO JOBS FOUND!</p>}
         </div>
-      </section >
-      </>
+      )}
+    </div>
+  </section>
+</>
+
   )
 }
 

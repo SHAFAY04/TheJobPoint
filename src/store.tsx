@@ -1,16 +1,26 @@
-import { configureStore } from "@reduxjs/toolkit";
-import jobReducer ,{ JobState }from './components/jobSlice';
+// store.ts
 
-const store= configureStore({
+import { Reducer } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
+import jobReducer, { JobState } from './components/jobSlice';
+import { apiSlice } from './api/apiSlice'; // Adjust the path as needed
+import { Middleware } from '@reduxjs/toolkit';
 
-    //we are going to put in the reducers that we create in this reducer object
-    reducer:{
-        job:jobReducer
-    }
-})
-//this rootState is the type of our entire Redux state
-export type RootState = {
-    job: JobState;
-}
+// Example type assertion
+const apiMiddleware: Middleware = apiSlice.middleware;
+const apiReducer:Reducer = apiSlice.reducer as Reducer;
+
+const store = configureStore({
+  reducer: {
+    job: jobReducer,
+    api: apiReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(apiMiddleware),
+  });
+
+// Define types for RootState and AppDispatch
+export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
 export default store;

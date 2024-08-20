@@ -1,7 +1,5 @@
 import React from 'react'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { json } from 'react-router-dom';
-import { action } from 'easy-peasy';
 
 interface JobSingle {
     id: string;

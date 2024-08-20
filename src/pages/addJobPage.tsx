@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from '../store';
 import Spinners from '../components/spinners';
 import Error from './ErrorPage';
 import { nanoid } from '@reduxjs/toolkit';
+import { useAddJobMutation } from '../api/apiSlice';
 
 interface Job{
 
@@ -28,10 +29,6 @@ interface Job{
   
 const addJobPage = () => {
 
-const dispatch= useDispatch<AppDispatch>()
-const {loading,error}=useSelector((state:RootState)=>state.job)
-
-
     let [type, setType] =useState<string>('Full-Time')
 const [ListingName, setListingName] =useState<string> ('')
 const [Description, setDescription] =useState<string> ('')
@@ -43,10 +40,17 @@ const [ContactEmail, setContactEmail] =useState<string> ('')
 const [ContactPhone, setContactPhone] =useState<string> ('')
 
 const navigate = useNavigate();
-//type of form events is not just Event its form Event
 
 const[formSubmitted,setFormSubmitted]=useState(false)
 const[showError,setShowError]=useState(false)
+// USING REDUX!
+// const dispatch= useDispatch<AppDispatch>()
+// const {loading,error}=useSelector((state:RootState)=>state.job)
+
+//USING RTK QUERY!
+const [addJob,{isLoading,isError,isSuccess,error}]=useAddJobMutation()
+
+//type of form events is not just Event its form Event
 
 const submitForm=(e:FormEvent)=>{
     e.preventDefault()
@@ -68,7 +72,9 @@ const submitForm=(e:FormEvent)=>{
     }
 
     
-      dispatch(jobAdd(job))
+      // dispatch(jobAdd(job))
+      addJob(job)
+
       setFormSubmitted(true)
      
 
@@ -76,35 +82,37 @@ const submitForm=(e:FormEvent)=>{
 
 useEffect(()=>{
 
-  if(loading && !error && formSubmitted){
+  if(formSubmitted){
+  if(isLoading ){
 
     toast.info('Loading..')
   }
 
- if(!loading && error && formSubmitted){
+ else if( isError ){
 
   
   setTimeout(() => {
     setShowError(true)
     toast.dismiss()
-    toast.error(error)
+    toast.error('status' in error? error.status:error.message)
   }, 3000);
     
   }
 
-  if(!loading && !error && formSubmitted){
+  else{
 
     toast.success('JOB ADDED SUCCESSFULLY!')
     return navigate('/jobs')
   }
-},[loading,error])
+}
+},[isLoading,isError])
 
 return (
     <>
       {formSubmitted ? (
-       loading ? (
-          <Spinners loading={loading} />
-        ) : error && showError ? (
+       showError!==true ? (
+          <Spinners loading={true} />
+        ) : isError && showError ? (
           <Error error={error} />
 
         ) : null // No need to handle success here as navigate will take care of it
