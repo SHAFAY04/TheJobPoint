@@ -5,6 +5,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import jobReducer, { JobState } from './components/jobSlice';
 import { apiSlice } from './api/apiSlice'; // Adjust the path as needed
 import { Middleware } from '@reduxjs/toolkit';
+import usersApiSlice from './api/usersApiSlice';
 
 // Example type assertion
 const apiMiddleware: Middleware = apiSlice.middleware;
@@ -14,9 +15,10 @@ const store = configureStore({
   reducer: {
     job: jobReducer,
     api: apiReducer,
+    usersApi:usersApiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiMiddleware),
+    getDefaultMiddleware().concat(apiMiddleware,usersApiSlice.middleware),
   });
 
 // Define types for RootState and AppDispatch

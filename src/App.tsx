@@ -10,7 +10,8 @@ import EditJobPage from './pages/EditJobPage'
 import { useContext, useEffect, useState } from 'react'
 import HooksPage from './pages/hooksPage'
 import { createContext } from 'react'
-
+import Register from './components/Register'
+import Login from './components/login'
 
 //Note that the dist folder is only generated
 //when you run the build command. During 
@@ -106,6 +107,8 @@ const router = createBrowserRouter(createRoutesFromElements(
 <Route path='/' element={<MainLayout/>}>
 <Route index element={<Homepage />}/>
 <Route path='/jobs' element={<Jobspage/>}/>
+<Route path='/register' element={<Register/>}/>
+<Route path='/login' element={<Login/>}/>
 
 {/*the :id is dynamic its a variable for any id that you pass in for examples job/1 */}
 {/*here we are passing in that dataloader */}

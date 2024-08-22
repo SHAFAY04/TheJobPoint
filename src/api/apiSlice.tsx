@@ -22,10 +22,7 @@ interface Job {
     editedJob:Job,
     id:string|undefined,
   }
-  type getJobType={
-    
-    id:string|undefined,
-  }
+  
 // Create the API slice
 export const apiSlice = createApi({
     
