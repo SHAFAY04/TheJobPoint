@@ -4,7 +4,7 @@ import {v4 as uuid} from 'uuid'
 import * as date from 'date-fns'
 import * as path from 'path'
 
-const logEvents= async(message:string):Promise<void>=>{
+const logEvents= async(message:string,fileName):Promise<void>=>{
 
     const dateTime:string= date.format(new Date(),'yyyy-MM-dd\t hh:mm:ss')
     const logContent:string=`${dateTime}\t${uuid()}\t${message}\n`
@@ -20,7 +20,7 @@ const logEvents= async(message:string):Promise<void>=>{
 
             })
         }
-        await fs.promises.appendFile(path.join(__dirname,'logs','eventsLog.txt'),logContent)
+        await fs.promises.appendFile(path.join(__dirname,'logs',fileName),logContent)
 
     } catch (error) {
         

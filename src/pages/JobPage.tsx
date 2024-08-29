@@ -1,8 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import Job from '../components/Job'
-import Jobspage from './jobspage'
-import { FaArrowLeft, FaMapMarked } from 'react-icons/fa'
-import { Link, useLocation,useLoaderData, LoaderFunction, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import Back from '../components/JobBack'
 import JobIntro from '../components/JobIntro'
 import JobDesc from '../components/JobDesc'
@@ -10,10 +6,7 @@ import JobCompanyInfo from '../components/JobCompanyInfo'
 import JobManage from '../components/JobManage'
 import Spinners from '../components/spinners'
 import Errorpage from './ErrorPage'
-import { jobDelete } from '../components/jobSlice'
-import { useDispatch, useSelector } from 'react-redux'
-import { jobGet } from '../components/jobSlice'
-import { AppDispatch, RootState } from '../store'
+import { useGetJobQuery } from '../api/apiSlice'
 
 
 
@@ -35,7 +28,7 @@ const JobPage =() => {
 
   //useLocation is detailed mostly used to get details like hash location changes etc
   //to get our path from the route we can do location.pathname as i have used below
-  const location = useLocation()
+  // const location = useLocation()
   const { id } = useParams()
 
   //i am gonna comment this useEffect out because we can use dataLoader and you will see it outside the JobPage function ofcourse because it technically gets exported
@@ -60,15 +53,16 @@ const JobPage =() => {
 
   // }, [])
 
+  const { data: job, isLoading, isError, error } = useGetJobQuery(id);
 
-  const dispatch= useDispatch<AppDispatch>()
+  // const dispatch= useDispatch<AppDispatch>()
 
-  useEffect(()=>{
-    dispatch(jobGet(id))
+  // useEffect(()=>{
+  //   dispatch(jobGet(id))
+  //   getJob(id)
 
-  },[dispatch,id])
-  const {job,error,loading}=useSelector((state:RootState)=>state.job)
-
+  // },[dispatch,id])
+  // const {job,error,loading}=useSelector((state:RootState)=>state.job)
 
   return (
    
@@ -76,9 +70,9 @@ const JobPage =() => {
         <>
 
           <Back />
-          {loading ? (
-  <Spinners loading={loading} />
-) : error ? (
+          {isLoading ? (
+  <Spinners loading={isLoading} />
+) : isError ? (
   <Errorpage error={error} />
 ) : (
   <section className="bg-emerald-300">

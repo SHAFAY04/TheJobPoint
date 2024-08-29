@@ -2,7 +2,7 @@
 
 import { Reducer } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
-import jobReducer, { JobState } from './components/jobSlice';
+import jobReducer from './components/jobSlice';
 import { apiSlice } from './api/apiSlice'; // Adjust the path as needed
 import { Middleware } from '@reduxjs/toolkit';
 import usersApiSlice from './api/usersApiSlice';

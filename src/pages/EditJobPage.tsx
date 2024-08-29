@@ -1,13 +1,13 @@
-import React, { FormEvent, useContext, useEffect, useState } from 'react'
-import { useLoaderData, useLocation, useNavigate, useParams } from 'react-router-dom'
+import  { FormEvent,useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import Job from '../components/Job';
 import { toast } from 'react-toastify';
-import { editJobContext } from '../App';
-import { useDispatch, useSelector } from 'react-redux';
-import { UseSelector } from 'react-redux';
-import { jobEdit } from '../components/jobSlice';
-import { AppDispatch, RootState } from '../store';
-import spinners from '../components/spinners';
+// import { editJobContext } from '../App';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { UseSelector } from 'react-redux';
+// import { jobEdit } from '../components/jobSlice';
+// import { AppDispatch, RootState } from '../store';
+// import spinners from '../components/spinners';
 import Spinners from '../components/spinners';
 import Error from './ErrorPage';
 import { useEditJobMutation, useGetJobQuery } from '../api/apiSlice';

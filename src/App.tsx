@@ -2,12 +2,12 @@ import Errorpage from './pages/ErrorPage'
 import Jobspage from './pages/jobspage'
 import MainLayout from './layouts/MainLayout'
 import Homepage from './pages/homepage'
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider, useLocation } from 'react-router-dom'
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'
 import JobPage from './pages/JobPage'
 import './index.css'; // Include this for custom Tailwind styl
 import AddJobPage from './pages/addJobPage'
 import EditJobPage from './pages/EditJobPage'
-import { useContext, useEffect, useState } from 'react'
+import { useState } from 'react'
 import HooksPage from './pages/hooksPage'
 import { createContext } from 'react'
 import Register from './components/Register'
@@ -26,14 +26,14 @@ import Login from './components/login'
 
 //create variables here its basic ts out here
 //while in the return of a component its all tsx
-let name: string = 'shafay'
-let x: number = 20
-let y: number = 10
-let names = ['sara', 'jonathon', 'oakley']
-let loggedIn = true
-let styles = {
-  color: 'green'
-}
+// let name: string = 'shafay'
+// let x: number = 20
+// let y: number = 10
+// let names = ['sara', 'jonathon', 'oakley']
+// let loggedIn = true
+// let styles = {
+//   color: 'green'
+// }
 
 //sending user prop to hooksPage without Prop drilling!
 //you have to provide a default value which will be used only if this userContext is used in a component without wrapping that component in a provider!
@@ -41,65 +41,66 @@ let styles = {
 export const userContext=createContext('ANTHONY')
 
 //we will create all the add, edit, delete methods here
-interface Job{
+// interface Job{
  
-  title: string;
-  description: string;
-  salary: string;
-  location: string;
-  company:{
-    name:string,
-    description:string,
-    contactPhone:string,
-    contactEmail:string,
-  }
-}
+//   title: string;
+//   description: string;
+//   salary: string;
+//   location: string;
+//   company:{
+//     name:string,
+//     description:string,
+//     contactPhone:string,
+//     contactEmail:string,
+//   }
+// }
 
-const addJob=async(job:Job)=>{
+// const addJob=async(job:Job)=>{
 
-  let res= await fetch('/api/jobs',{
-    method:'POST',
-    headers:{
-      'Content-type':'application/json',
-    },
-    body:JSON.stringify(job)
-  })
-}
+//   let res= await fetch('/api/jobs',{
+//     method:'POST',
+//     headers:{
+//       'Content-type':'application/json',
+//     },
+//     body:JSON.stringify(job)
+//   })
+// }
 
-const deleteJob= async(id:number)=>{
+const deleteJob= async(id:string)=>{
 
   const res= await fetch(`/api/jobs/${id}`,{
     method:'DELETE'
   })
+  res.ok
  
 }
 export const deleteJobContext=createContext(deleteJob)
 
-const editJob=async(id:any,editedJob:Job)=>{
+// const editJob=async(id:any,editedJob:Job)=>{
 
-    const res= await fetch(`/api/jobs/${id}`,{
+//     const res= await fetch(`/api/jobs/${id}`,{
       
-      method:'PUT',
-      headers:{
+//       method:'PUT',
+//       headers:{
 
-        'Accept':'application/json, text/plain, */*',
-        'Content-type':'application/json'
-      },
-      body:JSON.stringify(
-          editedJob
-      )
+//         'Accept':'application/json, text/plain, */*',
+//         'Content-type':'application/json'
+//       },
+//       body:JSON.stringify(
+//           editedJob
+//       )
     
 
-    })
-}
-export const editJobContext=createContext(editJob)
+//     })
+// }
+// export const editJobContext=createContext(editJob)
 
  
 //use rafce to create a react component!
 //like the following
 
 const App = () => {
-  const [user,setUser]=useState('DAVID')
+  const [user]=useState('DAVID')
   
 const router = createBrowserRouter(createRoutesFromElements(
   //LAYOUTS

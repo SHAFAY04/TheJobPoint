@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 interface JobSingle {
@@ -46,8 +46,8 @@ const initialState:JobState={
     
 }
 
-export const fetchJobs= createAsyncThunk('jobs/fetchJobs',async (isHome:boolean)=>{
-    const apiUrl= isHome? '/api/jobs?_limit=3':'/api/jobs'
+export const fetchJobs= createAsyncThunk('jobs/fetchJobs',async ()=>{
+
     const res= await fetch('/api/jobs')
     const data= await res.json()
     return data 
@@ -182,7 +182,7 @@ const JobSlice = createSlice({
             state.jobs=state.jobs.filter(job=>job.id!==action.payload.id)
         })
         .addCase(jobDelete.rejected,(state,action)=>{
-            state.error=action.error.message||'ERROR EDITING!'
+            state.error=action.error.message||'ERROR DELETING!'
             state.loading=false
         })
         .addCase(jobGet.pending,(state)=>{
@@ -195,7 +195,7 @@ const JobSlice = createSlice({
             state.job=action.payload
         })
         .addCase(jobGet.rejected,(state,action)=>{
-            state.error=action.error.message||'ERROR EDITING!'
+            state.error=action.error.message||'ERROR GETTING JOB!'
             state.loading=false
         })
     },

@@ -1,10 +1,7 @@
-import React, { FormEvent, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import  { FormEvent, useEffect, useState } from 'react'
 //useNavigate hook helps navigating to some url after performing some action or some function
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { jobAdd } from '../components/jobSlice';
-import { AppDispatch, RootState } from '../store';
 import Spinners from '../components/spinners';
 import Error from './ErrorPage';
 import { nanoid } from '@reduxjs/toolkit';
@@ -48,7 +45,7 @@ const[showError,setShowError]=useState(false)
 // const {loading,error}=useSelector((state:RootState)=>state.job)
 
 //USING RTK QUERY!
-const [addJob,{isLoading,isError,isSuccess,error}]=useAddJobMutation()
+const [addJob,{isLoading,isError,error}]=useAddJobMutation()
 
 //type of form events is not just Event its form Event
 

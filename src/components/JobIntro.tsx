@@ -1,8 +1,7 @@
-import React from 'react'
 import { FaMapMarked } from 'react-icons/fa'
 
 interface Job{
-  id:number;
+  id:string|undefined;
   type: string;
   title: string;
   description: string;

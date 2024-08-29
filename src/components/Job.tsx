@@ -1,11 +1,10 @@
-import React, { ReactNode } from 'react'
 import { useState } from 'react';
 //npm i react-icons
 import { FaMapMarker } from 'react-icons/fa'
 import { Link } from 'react-router-dom'; 
 
 interface JobKeys {
-  id:string;
+  id:string|undefined;
   type: string;
   title: string;
   description: string;

@@ -1,4 +1,4 @@
-import {  createContext,  ReactNode, SetStateAction, useState } from "react";
+import {  createContext,  ReactNode,  useState } from "react";
 
 interface AuthContextType {
     auth:{

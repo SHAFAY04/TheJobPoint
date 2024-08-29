@@ -1,7 +1,7 @@
-import React from 'react'
+
 
 interface JobKeys{
-  id:number;
+  id:string|undefined
   type: string;
   title: string;
   description: string;

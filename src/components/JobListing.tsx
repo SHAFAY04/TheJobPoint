@@ -1,18 +1,18 @@
-import React, { Dispatch, ReactNode } from 'react'
+// import React, { Dispatch, ReactNode } from 'react'
 import Job from './Job'
 //npm i react-spinners
 import Spinners from './spinners';
-import { useState,useEffect } from 'react';
-import useFetch from '../hooks/useFetch';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState,AppDispatch } from '../store';
-import { fetchJobs } from './jobSlice';
-import { AsyncThunkAction } from '@reduxjs/toolkit';
+// import { useState,useEffect } from 'react';
+// import useFetch from '../hooks/useFetch';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { RootState,AppDispatch } from '../store';
+// import { fetchJobs } from './jobSlice';
+// import { AsyncThunkAction } from '@reduxjs/toolkit';
 import { useGetJobsQuery } from '../api/apiSlice';
 import Error from '../pages/ErrorPage';
 
 interface Job {
-  id:number;
+  id:string;
   type: string;
   title: string;
   description: string;
@@ -93,7 +93,6 @@ const {
   data :jobs,
   isLoading,
   isError,
-  isSuccess,
   error,
 
 }= useGetJobsQuery(undefined)

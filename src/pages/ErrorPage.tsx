@@ -1,6 +1,5 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { SerializedError } from '@reduxjs/toolkit/react';
-import { useState } from 'react';
 import { FaExclamationTriangle } from 'react-icons/fa';
 
 

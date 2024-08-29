@@ -1,7 +1,6 @@
-import React, {  useCallback, useEffect, useMemo, useReducer, useRef, useState, useContext, ChangeEvent } from 'react'
+import  {  useCallback, useEffect, useMemo, useReducer, useRef, useState, useContext, ChangeEvent } from 'react'
 import { userContext } from '../App'
-import { useTransition,startTransition } from 'react'
-import Spinners from '../components/spinners'
+import { useTransition} from 'react'
 
 const hooksPage = () => {
 
@@ -137,11 +136,9 @@ const reducer=(state:typeof initState, action:reducerAction):typeof initState=>{
     //USETRANSITION HOOK!
 
     const [isPending,startTransition]=useTransition()
-    const [input,setInput]=useState('')
     const[list,setList]=useState<string[]>([])
     const renderlist=(e:ChangeEvent<HTMLInputElement>)=>{
 
-        setInput(e.target.value)
         
         startTransition(()=>{ const list:string[]=[]
             const listSize=2000

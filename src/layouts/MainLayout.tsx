@@ -1,4 +1,3 @@
-import React from 'react'
 import Navbar from "../components/Navbar"
 //in the layout you have to do this go get that
 //child router that was not displaying

@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState } from 'react'
+import  {  useEffect, useState } from 'react'
 
 const useFetch = (dataUrl:string) => {
     

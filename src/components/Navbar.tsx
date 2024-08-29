@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import logo from '../assets/images/logo.png'
 import { NavLink } from 'react-router-dom'
 import ToggleDarkMode from './toggledarkmode'
 import useWindowResize from '../hooks/useWindowResize'
-import { FaMobile,FaTablet,FaLaptop, FaMobileAlt, FaTabletAlt } from 'react-icons/fa'
-import { FaMobileRetro, FaMobileScreen, FaTabletButton, FaTabletScreenButton } from 'react-icons/fa6'
+import {FaLaptop, FaTabletAlt } from 'react-icons/fa'
+import { FaMobileScreen } from 'react-icons/fa6'
 
 const Navbar = () => {
   interface LinkClassProps {

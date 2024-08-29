@@ -1,4 +1,4 @@
-import React, { Children, ReactNode } from 'react'
+import{  ReactNode } from 'react'
 
 type headingProps={title?:string,children:ReactNode, subtitle:string}
 

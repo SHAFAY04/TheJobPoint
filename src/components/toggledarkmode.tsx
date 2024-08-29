@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 
 const ToggleDarkMode = () => {

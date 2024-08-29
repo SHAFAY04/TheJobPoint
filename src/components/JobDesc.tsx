@@ -1,7 +1,6 @@
-import React from 'react'
 
 interface Job {
-  id: number;
+  id: string|undefined
   type: string;
   title: string;
   description: string;
