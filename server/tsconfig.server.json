@@ -11,7 +11,7 @@
       "resolveJsonModule": true,
       "types": ["node"] // Add this line to include Node.js types
     },
-    "include": ["src/**/*.ts"],
+    "include": ["*.ts", "**/*.ts"],
     "exclude": ["node_modules", "dist"]
   }
   

@@ -20,4 +20,6 @@ const handleNewUser = async(req,res)=>{
 
         res.status(400).json({message:'Username and Password are required!'})
     }
+
+    //check f
 }
