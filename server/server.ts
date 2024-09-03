@@ -7,8 +7,10 @@ import { logger } from './middleware/logEvents'
 import logEvents from './middleware/logEvents'
 import errorHandler from './middleware/errorHandler'
 import * as cors from 'cors'
-import corsOptions from './api/corsOptions'
+import corsOptions from './config/corsOptions'
 import userRoute from './routes/userRoute'
+import registerRouter from './routes/register'
+import authRoute from './routes/auth'
 
 const PORT=process.env.PORT ||3500
 
@@ -30,6 +32,10 @@ app.use('/',rootroute)
 app.use('/about',aboutroot)
 
 app.use('/users',userRoute)
+
+app.use('/register',registerRouter)
+
+app.use('/auth',authRoute)
 
 app.get('^/*',(req,res)=>{
 
