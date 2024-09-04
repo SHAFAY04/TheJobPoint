@@ -46,11 +46,9 @@ const handleNewUser = async (req, res) => {
             data.password = hashedPwd
 
             users = [...users, data]
-
-            await fs.promises.writeFile(path.join(__dirname, '..', 'model', 'user.json'), JSON.stringify(users))
-
             res.send(201).json({ message: `Success: new user ${username} created!` })
 
+            await fs.promises.writeFile(path.join(__dirname, '..', 'model', 'user.json'), JSON.stringify(users,null,2))
         } catch (error) {
 
             res.status(500).json({ message: error.message })
