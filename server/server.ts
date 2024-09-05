@@ -14,6 +14,8 @@ import authRoute from './routes/auth'
 import verifyJwt from './middleware/verifyJWT'
 import * as cookieParser from 'cookie-parser'
 import refreshRoute from './routes/refresh'
+import logoutRouter from './routes/logout'
+import credentials from './middleware/credentials'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
@@ -23,6 +25,8 @@ const PORT=process.env.PORT ||3500
 const app= express()
 
 app.use(logger)
+
+app.use(credentials)
 
 app.use(cors(corsOptions))
 
@@ -45,6 +49,8 @@ app.use('/register',registerRouter)
 app.use('/auth',authRoute)
 
 app.use('/refresh',refreshRoute)
+
+app.use('/logout',logoutRouter)
 
 //since everything works like a waterfall in here and we definitely dont wanna have the authentication on either the register route or the login route because you get the jwt token when you finally log in with the correct username and password so basically any routes that come after the verifyJWT middleware will use the jwt authentication 
 app.use(verifyJwt)

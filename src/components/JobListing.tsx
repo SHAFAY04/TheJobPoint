@@ -95,7 +95,7 @@ const {
   isError,
   error,
 
-}= useGetJobsQuery(undefined)
+}= useGetJobsQuery()
 
   return(
 <>

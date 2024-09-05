@@ -43,7 +43,7 @@ const handleRefreshToken = async (req: Request, res: Response) => {
                 {expiresIn:'30s'}
             )
 
-            res.json(decoded.username)
+            res.json({accessToken})
         })
 
     }

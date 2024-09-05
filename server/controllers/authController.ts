@@ -42,19 +42,14 @@ const handleAuth = async (req: Request, res: Response) => {
 
         // Save the refresh token with the user
         let otherUsers =
-            users.filter((person: userType) => person.username !== user.username).map((person) => {
-
-                const {refreshToken,...rest}=person
-    
-                return rest
-            })
-
+            users.filter((person: userType) => person.username !== user.username)
+            
         const currentUser = { ...user, refreshToken };
 
         users = [...otherUsers, currentUser];
 
             // Set the refresh token as an HttpOnly cookie
-            res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+            res.cookie('jwt', refreshToken, { httpOnly: true,sameSite:'none',secure:true, maxAge: 24 * 60 * 60 * 1000 });
 
             // Send the access token to the client
             res.json({ accessToken });

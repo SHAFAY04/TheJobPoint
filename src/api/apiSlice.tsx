@@ -24,7 +24,7 @@ interface Job {
   }
   
 // Create the API slice
-export const apiSlice = createApi({
+ const apiSlice = createApi({
     
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
@@ -61,6 +61,6 @@ export const apiSlice = createApi({
 export const { useGetJobsQuery,useGetJobQuery,useEditJobMutation, useAddJobMutation } = apiSlice;
 
 // Export the API slice itself
-export default apiSlice.reducer;
+export default apiSlice;
 
 

@@ -1,19 +1,18 @@
 [
-  {
-    "username": "shafkata",
-    "password": "Sha22@fkat"
-  },
-  {
-    "username": "Devin_Kwolsky",
-    "password": "$2b$10$lCBs9SNgdgaj.pI5eAOLjeHvhI4SammPW79PbKrkJwSKaWfwWdkka"
-  },
-  {
-    "username": "Sherry",
-    "password": "$2b$10$zhisxP42kCHNkjCuVCrZX.Z4tyhMZI1rk.cbAk5zHlbS31RAvrAkS"
-  },
-  {
-    "username": "Shafay04",
-    "password": "$2b$10$tlW9FYmp2S.kP87jkq3wXO8eu1pStvKoKkHD5bNDKqvT02MKJ/19.",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNoYWZheTA0IiwiaWF0IjoxNzI1NDY2Mjg5LCJleHAiOjE3MjU1NTI2ODl9.IQqvU-l965nDXcKa8UAHieFB5Mx9-hzFdIMnlBHGfg8"
-  }
+    {
+        "username": "shafkata",
+        "password": "Sha22@fkat"
+    },
+    {
+        "username": "Devin_Kwolsky",
+        "password": "$2b$10$lCBs9SNgdgaj.pI5eAOLjeHvhI4SammPW79PbKrkJwSKaWfwWdkka"
+    },
+    {
+        "username": "Shafay04",
+        "password": "$2b$10$tlW9FYmp2S.kP87jkq3wXO8eu1pStvKoKkHD5bNDKqvT02MKJ/19."
+    },
+    {
+        "username": "Sherry",
+        "password": "$2b$10$zhisxP42kCHNkjCuVCrZX.Z4tyhMZI1rk.cbAk5zHlbS31RAvrAkS"
+    }
 ]
