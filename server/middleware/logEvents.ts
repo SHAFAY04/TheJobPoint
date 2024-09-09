@@ -2,12 +2,12 @@ import * as path from 'path'
 import * as fs from 'fs'
 import * as express from 'express'
 import * as date from 'date-fns'
-import * as uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 
 const logEvents=async (message,filename)=>{
 
     const dateTime=date.format(new Date(),'dd-MM-yyyy\t hh:mm:ss')
-    const content=`\n${dateTime}\t${uuid.v4()}\t${message}`
+    const content=`\n${dateTime}\t${uuidv4()}\t${message}`
 
     if(fs.existsSync(path.join(__dirname,'..','logs'))){
 

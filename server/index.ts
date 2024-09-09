@@ -102,10 +102,10 @@ else{
 }
 
 import * as date from 'date-fns'
-import * as uuid from 'uuid'
+import  {v4 as uuidv4} from 'uuid'
 
 console.log(date.format(new Date(),'yyyy-MM-dd\tHH:mm:ss'))
-console.log(uuid.v4)
+console.log(uuidv4())
 
 //WORKING WITH EVENT EMITTER AND LOGS
 // import logEvents from './logEvents'
