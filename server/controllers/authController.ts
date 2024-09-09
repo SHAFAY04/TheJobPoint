@@ -8,11 +8,15 @@ let users = require('../model/user.json');
 
 type userType = {
     username: string,
+    roles:{},
     password: string,
     refreshToken?: string
 };
 
 const handleAuth = async (req: Request, res: Response) => {
+
+    let cookie=req.cookies
+    if(cookie.jwt)return res.status(409).send({message:'Another User Already Logged In!'})
     try {
         const { username, password } = req.body;
 
@@ -33,11 +37,13 @@ const handleAuth = async (req: Request, res: Response) => {
         const access = process.env.ACCESS_TOKEN_SECRET as string;
         const refresh = process.env.REFRESH_TOKEN_SECRET as string;
 
+        const roles=Object.values(user.roles)
+
         // Create JWTs
         //The user logs in with their credentials.
 //The server issues both an access token (for immediate use) and a refresh token (to keep the session alive).The access token is used for requests to protected routes.
 //When the access token expires, the client automatically sends a request to the /refresh route using the refresh token.Once the refresh token expires, the user will be required to log in again to obtain new tokens.
-        const accessToken = jwt.sign({ "username": user.username }, access, { expiresIn: '10s' });
+        const accessToken = jwt.sign({"UserInfo":{ "username": user.username,"roles":roles }}, access, { expiresIn: '30s' });
         const refreshToken = jwt.sign({ "username": user.username }, refresh, { expiresIn: '1d' });
 
         // Save the refresh token with the user
@@ -49,7 +55,9 @@ const handleAuth = async (req: Request, res: Response) => {
         users = [...otherUsers, currentUser];
 
             // Set the refresh token as an HttpOnly cookie
-            res.cookie('jwt', refreshToken, { httpOnly: true,sameSite:'none',secure:true, maxAge: 24 * 60 * 60 * 1000 });
+            //also you will need secure true when working with google or in production but when working with postman or thunderclient you shouldnt have it When your app is hosted on a server with HTTPS (as it should be), secure: true ensures that the cookie containing the refresh token is only sent over encrypted HTTPS connections, thus protecting it from being transmitted over insecure HTTP connections.In Development (Thunder Client): Tools like Thunder Client, Postman, or local development servers often use http://localhost, which is not HTTPS. If secure: true is set while working on http://localhost, the cookie will not be sent because it only allows the cookie to be transmitted over HTTPS.
+            //sameSite: 'None': This is used when cross-origin requests need to carry cookies, such as with third-party OAuth services (like Google).
+            res.cookie('jwt', refreshToken, { httpOnly: true,sameSite:'none', maxAge: 24 * 60 * 60 * 1000 });
 
             // Send the access token to the client
             res.json({ accessToken });
@@ -58,13 +66,28 @@ const handleAuth = async (req: Request, res: Response) => {
         const filePath = path.join(__dirname, '..', 'model', 'user.json');
         console.log('Writing to file:', filePath);
 
-            await fs.promises.writeFile(filePath, JSON.stringify(users, null, 2));
+        const backupPath = `${filePath}.backup`;
+        await fs.promises.copyFile(filePath, backupPath);
+
+        const tempFilePath = `${filePath}.tmp`;
+        await fs.promises.writeFile(tempFilePath, JSON.stringify(users));
+        await fs.promises.rename(tempFilePath, filePath);
+
+        console.log('File write successful.');
 
         
     } catch (error) {
         console.error('Error in handleAuth:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
+ // Restore from backup if file write failed
+ const filePath = path.join(__dirname, '..', 'model', 'user.json');
+ const backupPath = `${filePath}.backup`;
+
+ if (fs.existsSync(backupPath)) {
+     await fs.promises.copyFile(backupPath, filePath);
+     console.log('Restored user.json from backup.');
+ }
+
+ res.status(500).json({ message: 'Internal Server Error' });    }
 };
 
 export default handleAuth;

@@ -58,14 +58,14 @@ const editUser=async (req, res) => {
 
     if (users.findIndex((user) => user.id === req.body.id) === -1) {
 
-        res.status(404).send({ message: 'User Does Not exist!' })
+        return res.status(404).send({ message: 'User Does Not exist!' })
     }
-    else {
+    
         if (!validateUser(req)) {
 
-            res.status(400).send({ message: 'Username or password do not match the criteria!' })
+           return res.status(400).send({ message: 'Username or password do not match the criteria!' })
         }
-        else {
+        
             data.id = req.body.id
             data.username = req.body.username
             data.password = req.body.password
@@ -85,8 +85,8 @@ const editUser=async (req, res) => {
             catch (err) {
                 res.status(500).send({ message: 'Error saving user data' }); // 500 Internal Server Error
             }
-        }
-    }
+        
+    
 
 
 }

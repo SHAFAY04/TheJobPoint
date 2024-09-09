@@ -26,8 +26,10 @@ const app= express()
 
 app.use(logger)
 
+//handle options credentials check before cors this middleware checks if the request origin is allowed if it does then it sets the Allow credentials to true so that you can fetch the cookies as well in the frontend
 app.use(credentials)
 
+//Cross origin resource sharing
 app.use(cors(corsOptions))
 
 app.use(express.urlencoded({extended:false}))
