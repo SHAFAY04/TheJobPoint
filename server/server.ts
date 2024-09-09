@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs'
-import * as express from 'express'
+import  express from 'express'
 import rootroute from './routes/root'
 import aboutroot from './routes/subdir'
 import { logger } from './middleware/logEvents'
@@ -12,11 +12,11 @@ import userRoute from './routes/userRoute'
 import registerRouter from './routes/register'
 import authRoute from './routes/auth'
 import verifyJwt from './middleware/verifyJWT'
-import * as cookieParser from 'cookie-parser'
+import cookieParser from 'cookie-parser'
 import refreshRoute from './routes/refresh'
 import logoutRouter from './routes/logout'
 import credentials from './middleware/credentials'
-import * as dotenv from 'dotenv'
+import  dotenv from 'dotenv'
 
 dotenv.config()
 

@@ -8,7 +8,8 @@
         "start": "ts-node-dev --respawn server.ts",
         "index": "ts-node-dev --respawn index.ts",
         "stream": "ts-node-dev --respawn stream.ts",
-        "build": "tsc --project tsconfig.server.json"
+        "build": "tsc --project tsconfig.server.json",
+        "start:prod": "node dist/server.js"
     },
     "keywords": [],
     "author": "",

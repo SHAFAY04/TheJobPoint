@@ -108,7 +108,7 @@ console.log(date.format(new Date(),'yyyy-MM-dd\tHH:mm:ss'))
 console.log(uuid.v4)
 
 //WORKING WITH EVENT EMITTER AND LOGS
-import logEvents from './logEvents'
+// import logEvents from './logEvents'
 import {EventEmitter} from 'events'
 
 class MyEmitter extends EventEmitter{}
@@ -118,7 +118,7 @@ const myEmitter= new MyEmitter()
 //we cant just use .on on the EventEmitter because it is a class not an object which does not have a static on method so it requires an instance of it to actually use the .on method 
 myEmitter.on('log',(msg)=>{
 
-    logEvents(msg)
+    // logEvents(msg)
 })
 
 setTimeout(()=>{

@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as date from 'date-fns'
 import * as path from 'path'
 import { EventEmitter } from 'events'
-import logEvents from './logEvents'
+import logEvents from './middleware/logEvents'
 import * as http from 'http'
 
 let myEmitter = new EventEmitter()
