@@ -1,22 +1,20 @@
-import * as express from 'express'
-import * as path from 'path'
+export {};
+const express = require('express');
+const path = require('path');
 
-const rootroute= express.Router()
+const rootroute = express.Router();
 
-rootroute.get('^/$|/index(.html)?',(req,res)=>{
+rootroute.get('^/$|/index(.html)?', (req, res) => {
+    console.log(__dirname);
+    res.sendFile(path.join(__dirname, '..', 'views', 'index.html'));
+});
 
-    console.log(__dirname)
-    res.sendFile(path.join(__dirname,'..','views','index.html'))
-})
+rootroute.get('/idk(.html)?', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'views', 'idk.html'));
+});
 
-rootroute.get('/idk(.html)?',(req,res)=>{
+rootroute.get('/oldpage(.html)?', (req, res) => {
+    res.status(301).redirect('/idk');
+});
 
-    res.sendFile(path.join(__dirname,'..','views','idk.html'))
-})
-
-rootroute.get('/oldpage(.html)?',(req,res)=>{
-
-    res.status(301).redirect('/idk')
-})
-
-export default rootroute
+module.exports = rootroute;

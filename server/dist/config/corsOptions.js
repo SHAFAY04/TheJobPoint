@@ -1,14 +1,17 @@
-import whitelist from './allowedOrigins.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const whitelist = require('./allowedOrigins');
 const corsOptions = {
     origin: (origin, callback) => {
         if (whitelist.indexOf(origin) !== -1 || !origin) {
             callback(null, true);
         }
         else {
-            callback(new Error('Origin not Allowed!'));
+            console.log('Origin not allowed:', origin);
+            callback(new Error(`Origin not Allowed!: ${origin}`));
         }
     },
     optionsSuccessStatus: 200
 };
-export default corsOptions;
+module.exports = corsOptions;
 //# sourceMappingURL=corsOptions.js.map

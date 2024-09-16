@@ -1,10 +1,11 @@
-import * as path from 'path'
-import logEvents from './logEvents'
+export {};
+const path = require('path');
+const logEvents = require('./logEvents');
 
-const errorHandler=(err, req, res, next)=>{
+const errorHandler = (err, req, res, next) => {
+    logEvents(`${req.method}\t${req.headers.referer}\t${req.path}\t${err.name}: ${err.message}`, 'errorLog.txt');
+    console.error(err.stack); // Log error stack
+    res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
+};
 
-    logEvents(`${req.method}\t${req.headers.referer}\t${req.path}\t${err.name}: ${err.message}`,'errorLog.txt')
-    res.status(500).send('ORIGIN NOT ALLOWED!');
-}
-
-export default errorHandler
+module.exports = errorHandler;

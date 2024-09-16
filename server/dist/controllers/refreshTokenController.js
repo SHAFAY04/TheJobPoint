@@ -1,20 +1,21 @@
-import * as jwt from 'jsonwebtoken';
-import * as dotenv from 'dotenv';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 dotenv.config();
-import * as fs from 'fs'
-const users = JSON.parse(await fs.promises.readFile(new URL('../model/users.json', import.meta.url)));
+const users = require('../model/user.json');
 const handleRefreshToken = async (req, res) => {
     const cookies = req.cookies;
-    //checking if we have cookies and if we have them then do they have the jwt property or not
+    // Checking if we have cookies and if they have the jwt property or not
     if (!cookies?.jwt) {
-        //Unauthorized
+        // Unauthorized
         console.log('no cookies');
         return res.sendStatus(401);
     }
     const refreshToken = cookies.jwt;
-    let foundUser = users.find((person) => person.refreshToken === refreshToken);
+    const foundUser = users.find((person) => person.refreshToken === refreshToken);
     if (!foundUser) {
-        //forbidden!
+        // Forbidden!
         return res.sendStatus(403);
     }
     const access = process.env.ACCESS_TOKEN_SECRET;
@@ -28,5 +29,5 @@ const handleRefreshToken = async (req, res) => {
         res.json({ accessToken });
     });
 };
-export default handleRefreshToken;
+module.exports = handleRefreshToken;
 //# sourceMappingURL=refreshTokenController.js.map

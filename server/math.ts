@@ -1,2 +1,9 @@
-export const add = (a: number, b: number) => a + b;
-export const sub = (a: number, b: number) => a - b;
+// commonJS-module.js
+
+const add = (a, b) => a + b;
+const sub = (a, b) => a - b;
+
+module.exports = {
+    add,
+    sub
+};

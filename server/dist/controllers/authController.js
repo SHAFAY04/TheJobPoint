@@ -1,9 +1,16 @@
-import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
-import * as fs from 'fs';
-import * as path from 'path';
-
-const users = JSON.parse(await fs.promises.readFile(new URL('../model/users.json', import.meta.url)));
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
+let users = require('../model/user.json');
+const USER_REG = /^[a-zA-Z0-9]([._-]?[a-zA-Z0-9]){3,15}$/;
+const PWD_REG = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const validateUser = (req) => {
+    return (USER_REG.test(req.body.username) &&
+        PWD_REG.test(req.body.password));
+};
 const handleAuth = async (req, res) => {
     let cookie = req.cookies;
     if (cookie.jwt)
@@ -13,7 +20,7 @@ const handleAuth = async (req, res) => {
         if (!username || !password) {
             return res.status(400).json({ message: 'Username and Password are required!' });
         }
-        let user = users.find((person) => person.username === username);
+        let user = users.find(person => person.username === username);
         if (!user) {
             return res.status(401).json({ message: 'Invalid Username or Password!' });
         }
@@ -25,18 +32,13 @@ const handleAuth = async (req, res) => {
         const refresh = process.env.REFRESH_TOKEN_SECRET;
         const roles = Object.values(user.roles);
         // Create JWTs
-        //The user logs in with their credentials.
-        //The server issues both an access token (for immediate use) and a refresh token (to keep the session alive).The access token is used for requests to protected routes.
-        //When the access token expires, the client automatically sends a request to the /refresh route using the refresh token.Once the refresh token expires, the user will be required to log in again to obtain new tokens.
         const accessToken = jwt.sign({ "UserInfo": { "username": user.username, "roles": roles } }, access, { expiresIn: '30s' });
         const refreshToken = jwt.sign({ "username": user.username }, refresh, { expiresIn: '1d' });
         // Save the refresh token with the user
-        let otherUsers = users.filter((person) => person.username !== user.username);
+        let otherUsers = users.filter(person => person.username !== user.username);
         const currentUser = { ...user, refreshToken };
         users = [...otherUsers, currentUser];
         // Set the refresh token as an HttpOnly cookie
-        //also you will need secure true when working with google or in production but when working with postman or thunderclient you shouldnt have it When your app is hosted on a server with HTTPS (as it should be), secure: true ensures that the cookie containing the refresh token is only sent over encrypted HTTPS connections, thus protecting it from being transmitted over insecure HTTP connections.In Development (Thunder Client): Tools like Thunder Client, Postman, or local development servers often use http://localhost, which is not HTTPS. If secure: true is set while working on http://localhost, the cookie will not be sent because it only allows the cookie to be transmitted over HTTPS.
-        //sameSite: 'None': This is used when cross-origin requests need to carry cookies, such as with third-party OAuth services (like Google).
         res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
         // Send the access token to the client
         res.json({ accessToken });
@@ -62,5 +64,5 @@ const handleAuth = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-export default handleAuth;
+module.exports = handleAuth;
 //# sourceMappingURL=authController.js.map

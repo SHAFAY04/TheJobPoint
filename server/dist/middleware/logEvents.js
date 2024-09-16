@@ -1,29 +1,33 @@
-import * as path from 'path';
-import * as fs from 'fs';
-import * as date from 'date-fns';
-import { v4 as uuidv4 } from 'uuid';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const path = require('path');
+const fs = require('fs');
+const express = require('express');
+const date = require('date-fns');
+const { v4: uuidv4 } = require('uuid');
 const logEvents = async (message, filename) => {
     const dateTime = date.format(new Date(), 'dd-MM-yyyy\t hh:mm:ss');
     const content = `\n${dateTime}\t${uuidv4()}\t${message}`;
-    if (fs.existsSync(path.join(__dirname, '..', 'logs'))) {
-        fs.promises.appendFile(path.join(__dirname, '..', 'logs', filename), content);
+    const logDir = path.join(__dirname, '..', 'logs');
+    if (fs.existsSync(logDir)) {
+        // Append to file if directory exists
+        await fs.promises.appendFile(path.join(logDir, filename), content);
     }
     else {
         try {
-            //since making directory and appending to a file are async operations which could lead to the file getting appended first before even the directory is created so we gotta use await here 
-            await fs.promises.mkdir(path.join(__dirname, '..', 'logs'));
-            await fs.promises.appendFile(path.join(__dirname, '..', 'logs', filename), content);
+            // Create directory and append to file
+            await fs.promises.mkdir(logDir);
+            await fs.promises.appendFile(path.join(logDir, filename), content);
         }
         catch (err) {
             console.log(err);
         }
     }
 };
-//this next is a must thing not using it will cause infinite page loading It signals to Express that the middleware has completed its task and control should be passed to the next middleware or route handler in the stack.
 const logger = (req, res, next) => {
     logEvents(`${req.method}\t${req.headers.origin}\t${req.path}`, 'reqLog.txt');
     next();
 };
-export default logEvents;
-export { logger };
+module.exports = logEvents;
+module.exports.logger = logger;
 //# sourceMappingURL=logEvents.js.map

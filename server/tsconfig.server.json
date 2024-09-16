@@ -1,17 +1,21 @@
 {
-    "compilerOptions": {
-      "module": "ESNext",
-      "moduleResolution": "node",
-      "target": "ESNext",
-      "sourceMap": true,
-      "outDir": "dist",
-      "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "skipLibCheck": true,
-      "resolveJsonModule": true,
-      "types": ["node"] // Add this line to include Node.js types
-    },
-    "include": ["*.ts", "**/*.ts"],
-    "exclude": ["node_modules", "dist"]
-  }
-  
+  "compilerOptions": {
+    
+    "module": "commonjs",               // Ensures CommonJS module system
+    "target": "es6",
+"lib": ["es6", "dom"],
+"experimentalDecorators": true,
+"emitDecoratorMetadata": true,                // ECMAScript target
+    "moduleResolution": "node",         // Correctly resolves Node.js modules
+    "esModuleInterop": true,            // Allows default imports for CommonJS modules
+    "resolveJsonModule": true,          // Allow JSON imports
+    "allowSyntheticDefaultImports": true, // Enable default imports
+    "strict": true,                     // Strict type-checking
+    "outDir": "./dist",               
+    "baseUrl": "./",                    // Base URL for path resolution
+    "skipLibCheck": true    ,
+    "types": ["node"] // Include Node.js types
+  },
+  "include": ["*.ts", "**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

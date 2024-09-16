@@ -1,17 +1,19 @@
-import * as express from 'express';
-import verifyRoles from '../middleware/verifyRoles.js';
-import ROLES_LIST from '../config/rolesList.js';
-import { getAllUsers, getUser, createUser, editUser, deleteUser } from '../controllers/userController.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = require('express');
+const verifyRoles = require('../middleware/verifyRoles');
+const ROLES_LIST = require('../config/rolesList');
+const { getAllUsers, getUser, createUser, editUser, deleteUser } = require('../controllers/userController');
 const userRoute = express.Router();
-// import verifyJWT from '../middleware/verifyJWT'
+// Set up routes with middleware
 userRoute.route('/')
-    //we could do this too but since we need the jwt Verification for the whole userRoute so we'll use that middleware in the server file
-    // .get(verifyJWT,getAllUsers)
+    // Uncomment and use if JWT verification is needed for the entire userRoute
+    // .get(verifyJWT, getAllUsers)
     .get(verifyRoles(ROLES_LIST.User), getAllUsers)
     .post(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Editor), createUser)
     .put(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Editor), editUser)
     .delete(verifyRoles(ROLES_LIST.Admin), deleteUser);
 userRoute.route('/:id')
     .get(getUser);
-export default userRoute;
+module.exports = userRoute;
 //# sourceMappingURL=userRoute.js.map

@@ -1,14 +1,12 @@
-import whitelist from "../config/allowedOrigins"
 
-const credentials=(req,res,next)=>{
+export {};const whitelist = require('../config/allowedOrigins');
 
-
+const credentials = (req, res, next) => {
     if (whitelist.includes(req.headers.origin)) {
-        
-        res.header('Access-Control-Allow-Credentials',true)
+        res.header('Access-Control-Allow-Credentials', true);
     }
 
-    next()
-}
+    next();
+};
 
-export default credentials
+module.exports = credentials;

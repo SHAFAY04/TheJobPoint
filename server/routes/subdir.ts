@@ -1,11 +1,11 @@
-import * as express from 'express'
-import * as path from 'path'
+export {};
+const express = require('express');
+const path = require('path');
 
-const aboutroot=express.Router()
+const aboutroot = express.Router();
 
-aboutroot.get('^/$|/index(.html)?',(req,res)=>{
+aboutroot.get('^/$|/index(.html)?', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'views', 'about', 'index.html'));
+});
 
-    res.sendFile(path.join(__dirname,'..','views','about','index.html'))
-})
-
-export default aboutroot
+module.exports = aboutroot;

@@ -1,22 +1,13 @@
-import { Request, Response } from 'express';
-import * as bcrypt from 'bcrypt';
+
+    import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import * as fs from 'fs';
-import * as path from 'path';
 
-let users = require('../model/user.json');
+import Users from '../model/userSchema';
 
-type userType = {
-    username: string,
-    roles:{},
-    password: string,
-    refreshToken?: string
-};
+const handleAuth = async (req, res) => {
+    let cookie = req.cookies;
+    if (cookie.jwt) return res.status(409).send({ message: 'Another User Already Logged In!' });
 
-const handleAuth = async (req: Request, res: Response) => {
-
-    let cookie=req.cookies
-    if(cookie.jwt)return res.status(409).send({message:'Another User Already Logged In!'})
     try {
         const { username, password } = req.body;
 
@@ -24,70 +15,45 @@ const handleAuth = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'Username and Password are required!' });
         }
 
-        let user: userType = users.find((person: userType) => person.username === username);
+        let user = await Users.findOne({ where: { username } }) 
         if (!user) {
-            return res.status(401).json({ message: 'Invalid Username or Password!' });
+            return res.status(401).json({ message: 'User Doesnt Exist!' });
         }
 
-        const match = await bcrypt.compare(password, user.password);
+        const pass=user.getDataValue('password')
+        const userroles=user.getDataValue('roles')
+        const name=user.getDataValue('username')
+        const match = await bcrypt.compare(password, pass);
         if (!match) {
-            return res.status(401).json({ message: 'Invalid Username or Password!' });
+            return res.status(401).json({ message: 'Invalid Password!' });
         }
 
         const access = process.env.ACCESS_TOKEN_SECRET as string;
         const refresh = process.env.REFRESH_TOKEN_SECRET as string;
 
-        const roles=Object.values(user.roles)
+        const roles:number[] = Object.values(userroles)
+
 
         // Create JWTs
-        //The user logs in with their credentials.
-//The server issues both an access token (for immediate use) and a refresh token (to keep the session alive).The access token is used for requests to protected routes.
-//When the access token expires, the client automatically sends a request to the /refresh route using the refresh token.Once the refresh token expires, the user will be required to log in again to obtain new tokens.
-        const accessToken = jwt.sign({"UserInfo":{ "username": user.username,"roles":roles }}, access, { expiresIn: '30s' });
-        const refreshToken = jwt.sign({ "username": user.username }, refresh, { expiresIn: '1d' });
+        const accessToken = jwt.sign({ "UserInfo": { "username": name, "roles": roles } }, access, { expiresIn: '30s' });
+        const refreshtoken = jwt.sign({ "username": name }, refresh, { expiresIn: '1d' })
 
         // Save the refresh token with the user
-        let otherUsers =
-            users.filter((person: userType) => person.username !== user.username)
-            
-        const currentUser = { ...user, refreshToken };
-
-        users = [...otherUsers, currentUser];
-
-            // Set the refresh token as an HttpOnly cookie
-            //also you will need secure true when working with google or in production but when working with postman or thunderclient you shouldnt have it When your app is hosted on a server with HTTPS (as it should be), secure: true ensures that the cookie containing the refresh token is only sent over encrypted HTTPS connections, thus protecting it from being transmitted over insecure HTTP connections.In Development (Thunder Client): Tools like Thunder Client, Postman, or local development servers often use http://localhost, which is not HTTPS. If secure: true is set while working on http://localhost, the cookie will not be sent because it only allows the cookie to be transmitted over HTTPS.
-            //sameSite: 'None': This is used when cross-origin requests need to carry cookies, such as with third-party OAuth services (like Google).
-            res.cookie('jwt', refreshToken, { httpOnly: true,sameSite:'none', maxAge: 24 * 60 * 60 * 1000 });
-
-            // Send the access token to the client
-            res.json({ accessToken });
-
-        // Write the updated users array to the file
-        const filePath = path.join(__dirname, '..', 'model', 'user.json');
-        console.log('Writing to file:', filePath);
-
-        const backupPath = `${filePath}.backup`;
-        await fs.promises.copyFile(filePath, backupPath);
-
-        const tempFilePath = `${filePath}.tmp`;
-        await fs.promises.writeFile(tempFilePath, JSON.stringify(users));
-        await fs.promises.rename(tempFilePath, filePath);
-
-        console.log('File write successful.');
-
+        await Users.update({refreshtoken:refreshtoken},{where:{username}})
+        //Use .update() when you want to update records directly in the database without first fetching them.
+        //Use .save() when you already have the instance (like user) and want to modify specific fields on that instance, especially when you're working with the object in your code.
         
+
+        // Set the refresh token as an HttpOnly cookie
+        res.cookie('jwt', refreshtoken, { httpOnly: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
+
+        // Send the access token to the client
+        res.json({ accessToken });
+
     } catch (error) {
         console.error('Error in handleAuth:', error);
- // Restore from backup if file write failed
- const filePath = path.join(__dirname, '..', 'model', 'user.json');
- const backupPath = `${filePath}.backup`;
-
- if (fs.existsSync(backupPath)) {
-     await fs.promises.copyFile(backupPath, filePath);
-     console.log('Restored user.json from backup.');
- }
-
- res.status(500).json({ message: 'Internal Server Error' });    }
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 };
 
-export default handleAuth;
+module.exports = handleAuth;

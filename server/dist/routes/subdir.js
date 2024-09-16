@@ -1,8 +1,10 @@
-import * as express from 'express';
-import * as path from 'path';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = require('express');
+const path = require('path');
 const aboutroot = express.Router();
 aboutroot.get('^/$|/index(.html)?', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'views', 'about', 'index.html'));
 });
-export default aboutroot;
+module.exports = aboutroot;
 //# sourceMappingURL=subdir.js.map

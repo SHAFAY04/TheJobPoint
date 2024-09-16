@@ -1,6 +1,8 @@
-import * as express from 'express';
-import handleNewUser from '../controllers/registerController.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = require('express');
+const handleNewUser = require('../controllers/registerController');
 const registerRouter = express.Router();
 registerRouter.post('/', handleNewUser);
-export default registerRouter;
+module.exports = registerRouter;
 //# sourceMappingURL=register.js.map

@@ -1,7 +1,9 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as crypto from 'crypto';
-const users = JSON.parse(await fs.promises.readFile(new URL('../model/users.json', import.meta.url)));
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+let users = require('../model/users.json');
 const data = {
     id: '',
     username: '',
@@ -75,13 +77,19 @@ const deleteUser = async (req, res) => {
     }
 };
 const getUser = (req, res) => {
-    let user = users.findIndex((user) => user.id === req.params.id);
-    if (user !== -1) {
-        res.json(users[user]);
+    const userIndex = users.findIndex((user) => user.id === req.params.id);
+    if (userIndex !== -1) {
+        res.json(users[userIndex]);
     }
     else {
         res.status(400).send({ message: 'User not found!' });
     }
 };
-export { getAllUsers, getUser, createUser, editUser, deleteUser };
+module.exports = {
+    getAllUsers,
+    getUser,
+    createUser,
+    editUser,
+    deleteUser
+};
 //# sourceMappingURL=userController.js.map

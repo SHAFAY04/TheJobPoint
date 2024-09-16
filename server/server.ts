@@ -1,72 +1,73 @@
-import * as path from 'path'
-import * as fs from 'fs'
-import  express from 'express'
-import rootroute from './routes/root'
-import aboutroot from './routes/subdir'
-import { logger } from './middleware/logEvents'
-import logEvents from './middleware/logEvents'
-import errorHandler from './middleware/errorHandler'
-import cors from 'cors'
-import corsOptions from './config/corsOptions'
-import userRoute from './routes/userRoute'
-import registerRouter from './routes/register'
-import authRoute from './routes/auth'
-import verifyJwt from './middleware/verifyJWT'
-import cookieParser from 'cookie-parser'
-import refreshRoute from './routes/refresh'
-import logoutRouter from './routes/logout'
-import credentials from './middleware/credentials'
-import  dotenv from 'dotenv'
+export {};
 
-dotenv.config()
+const path = require('path');
+const fs = require('fs');
+const express = require('express');
+const rootroute = require('./routes/root');
+const aboutroot = require('./routes/subdir');
+const { logger } = require('./middleware/logEvents');
+const logEvents = require('./middleware/logEvents');
+const errorHandler = require('./middleware/errorHandler');
+const cors = require('cors');
+const corsOptions = require('./config/corsOptions');
+const jobsRoute = require('./routes/jobsRoute');
+const registerRouter = require('./routes/register');
+const authRoute = require('./routes/auth');
+const verifyJwt = require('./middleware/verifyJWT');
+const cookieParser = require('cookie-parser');
+const refreshRoute = require('./routes/refresh');
+const logoutRouter = require('./routes/logout');
+const credentials = require('./middleware/credentials');
+const dotenv = require('dotenv');
 
-const PORT=process.env.PORT ||3500
+dotenv.config();
 
-const app= express()
+const PORT = process.env.PORT || 3500;
 
-app.use(logger)
+const app = express();
 
-//handle options credentials check before cors this middleware checks if the request origin is allowed if it does then it sets the Allow credentials to true so that you can fetch the cookies as well in the frontend
-app.use(credentials)
+app.use(logger);
 
-//Cross origin resource sharing
-app.use(cors(corsOptions))
+// Handle options credentials check before CORS; this middleware checks if the request origin is allowed and sets the Allow credentials to true so cookies can be fetched in the frontend
+app.use(credentials);
 
-app.use(express.urlencoded({extended:false}))
+// Cross-Origin Resource Sharing
+app.use(cors(corsOptions));
 
-app.use(express.json())
+app.use(express.urlencoded({ extended: false }));
 
-//middleware for cookies
-app.use(cookieParser())
+//this gives you access to req.body and we can get json data
+app.use(express.json());
 
-app.use(express.static(path.join(__dirname,'/public')))
-app.use('/about',express.static(path.join(__dirname,'/public')))
+// Middleware for cookies
+app.use(cookieParser());
 
-app.use('/',rootroute)
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/about', express.static(path.join(__dirname, 'public')));
 
-app.use('/about',aboutroot)
+app.use('/', rootroute);
 
-app.use('/register',registerRouter)
+app.use('/about', aboutroot);
 
-app.use('/auth',authRoute)
+app.use('/register', registerRouter);
 
-app.use('/refresh',refreshRoute)
+app.use('/auth', authRoute);
 
-app.use('/logout',logoutRouter)
+app.use('/refresh', refreshRoute);
 
-//since everything works like a waterfall in here and we definitely dont wanna have the authentication on either the register route or the login route because you get the jwt token when you finally log in with the correct username and password so basically any routes that come after the verifyJWT middleware will use the jwt authentication 
-app.use(verifyJwt)
-app.use('/users',userRoute)
+app.use('/logout', logoutRouter);
 
-app.get('^/*',(req,res)=>{
+// Authentication middleware for routes after this point
+app.use(verifyJwt);
+app.use('/jobs', jobsRoute);
 
-    res.status(404).sendFile(path.join(__dirname,'views','404.html'))
-})
-// When the CORS middleware generates an error, that error is passed down the middleware stack.
-//Express will skip the remaining middleware in the stack and will pass the error to the nearest error-handling middleware.
-app.use(errorHandler)
+app.get('^/*', (req, res) => {
+    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
+});
 
-app.listen(PORT,()=>{
+// Handle CORS errors with the error handler middleware
+app.use(errorHandler);
 
-    console.log('SERVER IS UP AT 3500!')
-})
+app.listen(PORT, () => {
+    console.log(`SERVER IS UP AT ${PORT}!`);
+});

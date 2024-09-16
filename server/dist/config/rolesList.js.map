@@ -1,1 +1,1 @@
-{"version":3,"file":"rolesList.js","sourceRoot":"","sources":["../../config/rolesList.ts"],"names":[],"mappings":"AAAA,MAAM,UAAU,GAAC;IAEb,OAAO,EAAC,IAAI;IACZ,MAAM,EAAC,IAAI;IACX,QAAQ,EAAC,IAAI;CAChB,CAAA;AAED,eAAe,UAAU,CAAA"}
+{"version":3,"file":"rolesList.js","sourceRoot":"","sources":["../../config/rolesList.ts"],"names":[],"mappings":";;AAAA,MAAM,UAAU,GAAC;IAEb,OAAO,EAAC,IAAI;IACZ,MAAM,EAAC,IAAI;IACX,QAAQ,EAAC,IAAI;CAChB,CAAA;AAED,kBAAe,UAAU,CAAA"}

@@ -1,5 +1,7 @@
-import * as express from 'express';
-import * as path from 'path';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = require('express');
+const path = require('path');
 const rootroute = express.Router();
 rootroute.get('^/$|/index(.html)?', (req, res) => {
     console.log(__dirname);
@@ -11,5 +13,5 @@ rootroute.get('/idk(.html)?', (req, res) => {
 rootroute.get('/oldpage(.html)?', (req, res) => {
     res.status(301).redirect('/idk');
 });
-export default rootroute;
+module.exports = rootroute;
 //# sourceMappingURL=root.js.map
