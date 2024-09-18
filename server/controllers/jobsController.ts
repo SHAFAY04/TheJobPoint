@@ -1,6 +1,7 @@
 
 import company from '../model/companySchema'
 import job from '../model/jobSchema';
+import * as crypto from 'crypto'
 
 company.hasMany(job, { foreignKey: 'companyid' })
 job.belongsTo(company, { foreignKey: 'companyid' });
@@ -39,6 +40,9 @@ const getJob = async (req, res) => {
             attributes: ['jobid', 'jobtype', 'title', 'description', 'salary', 'location'],
             where: { jobid: req.params.id }
         })
+        if(!result){
+            return res.status(404).json({message:'Job not found!'})
+        }
         res.json(result)
     } catch (error) {
 
@@ -47,19 +51,20 @@ const getJob = async (req, res) => {
 }
 const editJob = async (req, res) => {
 
+    try{
     if (!req?.body || !req?.body?.company) {
         return res.status(400).json({ message: 'Incomplete Fields' })
     }
 
     const { jobid, jobtype, title, jobdescription, salary, location } = req.body
-    const { companyid, name, description, contactphone, contactemail } = req.body.company
+    const { name, description, contactphone, contactemail } = req.body.company
 
     if (!jobid || !jobtype || !title || !jobdescription || !salary || !location) {
         return res.status(400).json({ message: 'Missing required job fields' });
     }
 
     // Validate company fields
-    if (!companyid || !name || !description || !contactphone || !contactemail) {
+    if ( !name || !description || !contactphone || !contactemail) {
         return res.status(400).json({ message: 'Missing required company fields' });
     }
 
@@ -69,22 +74,42 @@ const editJob = async (req, res) => {
 
         return res.status(404).json({ message: 'Job doesnt Exist' })
     }
+    //we will do all the company related stuff in the backend to check if the company already exists and stuff based on the company name being sent in the payload
 
-    const jobCompany = await company.findOne({ where: { companyid } })
+    const jobCompany = await company.findOne({ where: { name } })
     if (!jobCompany){
-
+        const companyid=crypto.randomBytes(64).toString('hex').slice(0,4)
         await company.create({companyid,name,description,contactphone,contactemail})
         await job.update({jobtype,title,jobdescription,salary,location,companyid},{where:{jobid}})
         return res.json({message:'Job Edited'})
     }
-    await company.update({name,description,contactphone,contactemail},{where:{companyid}})
+    await company.update({name,description,contactphone,contactemail},{where:{name}})
     await job.update({jobtype,title,jobdescription,salary,location},{where:{jobid}})
     res.json({message:'Job Edited'})
+    }
+    catch (error) {
+        // Catch and handle any unexpected errors
+        res.status(500).json({ message: error.message });
+    }
 
 }
-const deleteJob = (req, res) => {
 
+const deleteJob = async(req, res) => {
+
+    if(!req?.body || !req?.body?.company){
+        return res.status(400).json({message:'invalid data'})
+    }
+    const {jobid}=req.body
+
+    const foundjob=await job.findByPk(jobid)
+
+    if(!foundjob){
+        return res.status(404).json({Message:'Job not found!'})
+    }
+
+    await job.destroy({where:{jobid}})
 }
+
 const createJob = async (req, res) => {
 
     if (!req?.body || !req?.body?.company) {
@@ -92,14 +117,14 @@ const createJob = async (req, res) => {
     }
 
     const { jobid, jobtype, title, jobdescription, salary, location } = req.body
-    const { companyid, name, description, contactphone, contactemail } = req.body.company
+    const { name, description, contactphone, contactemail } = req.body.company
 
     if (!jobid || !jobtype || !title || !jobdescription || !salary || !location) {
         return res.status(400).json({ message: 'Missing required job fields' });
     }
 
     // Validate company fields
-    if (!companyid || !name || !description || !contactphone || !contactemail) {
+    if ( !name || !description || !contactphone || !contactemail) {
         return res.status(400).json({ message: 'Missing required company fields' });
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -108,17 +133,17 @@ const createJob = async (req, res) => {
     }
 
     try {
-        const preExistingCompany = await company.findOne({ where: { companyid } })
+        const preExistingCompany = await company.findOne({ where: { name } })
 
         if (!preExistingCompany) {
 
+           const companyid=crypto.randomBytes(64).toString('hex').slice(0,4)
             await company.create({ companyid, name, description, contactphone, contactemail })
             await job.create({ jobid, jobtype, title, jobdescription, salary, location, companyid })
             return res.json({ message: 'Job creation Successfull!' })
         }
-
-        //in the frontend ill check on realtime if the company name in the target box matches any of the companies in the database if it does ill grab that company's id else i would just create a new company id with nano id 
-        await company.update({ name, description, contactphone, contactemail }, { where: { companyid } })
+        const companyid=preExistingCompany.getDataValue('companyid')
+        await company.update({ name, description, contactphone, contactemail }, { where: { name } })
         await job.create({ jobid, jobtype, title, jobdescription, salary, location, companyid })
         res.json({ message: 'Job creation Successfull!' })
 

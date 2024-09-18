@@ -1,11 +1,12 @@
 export {};
-const express = require('express');
-const path = require('path');
+    import * as  express from 'express';
+import * as path from 'path';
+import * as crypto from 'crypto'
 
 const rootroute = express.Router();
 
 rootroute.get('^/$|/index(.html)?', (req, res) => {
-    console.log(__dirname);
+    
     res.sendFile(path.join(__dirname, '..', 'views', 'index.html'));
 });
 
