@@ -1,10 +1,26 @@
-
+import {Request,Response}from 'express'
     import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
 import Users from '../model/userSchema';
 
-const handleAuth = async (req, res) => {
+//you have to extend Request object because cookies and body are not the only things that you send with the request
+//Without extending Request, you'd lose access to features like req.query, req.params, etc., which may cause TypeScript to throw errors when you try to access them.
+interface requestType extends Request{
+
+    cookies:{
+        jwt?:string
+    }
+    body:{
+        username:string,
+        password:string
+    }
+}
+interface responseType{
+    
+}
+const handleAuth = async (req:requestType, res:Response) => {
+    
     let cookie = req.cookies;
     if (cookie.jwt) return res.status(409).send({ message: 'Another User Already Logged In!' });
 
@@ -55,5 +71,4 @@ const handleAuth = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-
-module.exports = handleAuth;
+export default handleAuth;

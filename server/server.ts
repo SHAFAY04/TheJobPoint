@@ -1,24 +1,22 @@
 export {};
-
-const path = require('path');
-const fs = require('fs');
-const express = require('express');
-const rootroute = require('./routes/root');
-const aboutroot = require('./routes/subdir');
-const { logger } = require('./middleware/logEvents');
-const logEvents = require('./middleware/logEvents');
-const errorHandler = require('./middleware/errorHandler');
-const cors = require('cors');
-const corsOptions = require('./config/corsOptions');
-const jobsRoute = require('./routes/jobsRoute');
-const registerRouter = require('./routes/register');
-const authRoute = require('./routes/auth');
-const verifyJwt = require('./middleware/verifyJWT');
-const cookieParser = require('cookie-parser');
-const refreshRoute = require('./routes/refresh');
-const logoutRouter = require('./routes/logout');
-const credentials = require('./middleware/credentials');
-const dotenv = require('dotenv');
+import { Request,Response } from 'express';
+    import * as path from 'path';
+import express from 'express';
+import rootroute from './routes/root';
+import aboutroot from './routes/subdir';
+import { logger } from './middleware/logEvents';
+import errorHandler from './middleware/errorHandler';
+import cors from 'cors';
+import corsOptions from './config/corsOptions';
+import jobsRoute from './routes/jobsRoute';
+import registerRouter from './routes/register';
+import authRoute from './routes/auth';
+import verifyJwt from './middleware/verifyJWT';
+import cookieParser from 'cookie-parser';
+import refreshRoute from './routes/refresh';
+import logoutRouter from './routes/logout';
+import credentials from './middleware/credentials';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -61,7 +59,7 @@ app.use('/logout', logoutRouter);
 app.use(verifyJwt);
 app.use('/jobs', jobsRoute);
 
-app.get('^/*', (req, res) => {
+app.get('^/*', (req:Request, res:Response) => {
     res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
 });
 

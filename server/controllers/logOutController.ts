@@ -1,7 +1,14 @@
-
+import {Request,Response} from 'express'
 import users from './../model/userSchema'
 
-const handleLogout = async (req, res) => {
+interface requestType extends Request{
+
+    cookies:{
+        jwt?:string
+    }
+}
+
+const handleLogout = async (req:requestType, res:Response) => {
     const cookies = req.cookies;
 
     // Checking if we have cookies and if they have the jwt property or not
@@ -19,7 +26,7 @@ const handleLogout = async (req, res) => {
         res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });
         return res.sendStatus(204); // Successful but no content to send
     }
-    const foundUserRef=foundUser.getDataValue('refreshtoken')
+    
     foundUser.setDataValue('refreshtoken',null)
 foundUser.save()
 
@@ -28,4 +35,4 @@ foundUser.save()
 
 };
 
-module.exports = handleLogout;
+export default handleLogout;

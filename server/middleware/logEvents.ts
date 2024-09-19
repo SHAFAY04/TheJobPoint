@@ -1,11 +1,12 @@
 export {};
-const path = require('path');
-const fs = require('fs');
-const express = require('express');
-const date = require('date-fns');
-const { v4: uuidv4 } = require('uuid');
+    import * as path from 'path';
+import * as fs from 'fs';
+import { NextFunction, Request,Response } from 'express';
 
-const logEvents = async (message, filename) => {
+import * as date from 'date-fns';
+import { v4 as uuidv4 } from 'uuid';
+
+const logEvents = async (message:string, filename:string) => {
     const dateTime = date.format(new Date(), 'dd-MM-yyyy\t hh:mm:ss');
     const content = `\n${dateTime}\t${uuidv4()}\t${message}`;
 
@@ -25,10 +26,10 @@ const logEvents = async (message, filename) => {
     }
 };
 
-const logger = (req, res, next) => {
+const logger = (req:Request, res:Response, next:NextFunction) => {
     logEvents(`${req.method}\t${req.headers.origin}\t${req.path}`, 'reqLog.txt');
     next();
 };
 
-module.exports = logEvents;
-module.exports.logger = logger;
+export default logEvents
+export {logger}

@@ -1,17 +1,18 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const whitelist = require('./allowedOrigins');
+const allowedOrigins_1 = __importDefault(require("./allowedOrigins"));
 const corsOptions = {
     origin: (origin, callback) => {
-        if (whitelist.indexOf(origin) !== -1 || !origin) {
+        if ((origin && allowedOrigins_1.default.indexOf(origin) !== -1) || !origin) {
             callback(null, true);
         }
         else {
-            console.log('Origin not allowed:', origin);
             callback(new Error(`Origin not Allowed!: ${origin}`));
         }
     },
     optionsSuccessStatus: 200
 };
-module.exports = corsOptions;
-//# sourceMappingURL=corsOptions.js.map
+exports.default = corsOptions;

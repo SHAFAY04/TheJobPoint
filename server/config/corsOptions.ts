@@ -1,17 +1,18 @@
 export{}
 
-const whitelist = require('./allowedOrigins');
+import whitelist from './allowedOrigins';
+
+type corsCallback=(err:Error|null,allow?:boolean)=>void
 
 const corsOptions = {
-    origin: (origin, callback) => {
-        if (whitelist.indexOf(origin) !== -1 || !origin) {
+    origin: (origin:string|undefined, callback:corsCallback) => {
+        if ((origin && whitelist.indexOf(origin) !== -1) || !origin) {
             callback(null, true);
-        } else {
-            console.log('Origin not allowed:', origin);    
+        } else {  
             callback(new Error(`Origin not Allowed!: ${origin}`));
         }
     },
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200 as number
 };
 
-module.exports = corsOptions;
+export default corsOptions;

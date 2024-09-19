@@ -1,4 +1,4 @@
-
+import { Request,Response } from 'express';
 import company from '../model/companySchema'
 import job from '../model/jobSchema';
 import * as crypto from 'crypto'
@@ -6,7 +6,26 @@ import * as crypto from 'crypto'
 company.hasMany(job, { foreignKey: 'companyid' })
 job.belongsTo(company, { foreignKey: 'companyid' });
 
-const getAllJobs = async (req, res) => {
+interface requestType extends Request{
+
+    body:{
+        jobid?:string,
+        jobtype?:string,
+         title?:string,
+          jobdescription?:string,
+           salary?:string,
+            location?:string
+            company?:{
+                name?:string,
+                 description?:string,
+                  contactphone?:string,
+                   contactemail?:string
+            }
+    },
+}
+
+
+const getAllJobs = async (req:requestType, res:Response) => {
 
     try {
         const result = await job.findAll({
@@ -26,7 +45,7 @@ const getAllJobs = async (req, res) => {
         res.status(500).json({ message: err })
     }
 }
-const getJob = async (req, res) => {
+const getJob = async (req:requestType, res:Response) => {
 
     try {
         const result = await job.findOne({
@@ -49,7 +68,7 @@ const getJob = async (req, res) => {
         res.status(404).json({ message: 'Job doesnt exist' })
     }
 }
-const editJob = async (req, res) => {
+const editJob = async (req:requestType, res:Response) => {
 
     try{
     if (!req?.body || !req?.body?.company) {
@@ -89,12 +108,12 @@ const editJob = async (req, res) => {
     }
     catch (error) {
         // Catch and handle any unexpected errors
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: (error as Error).message });
     }
 
 }
 
-const deleteJob = async(req, res) => {
+const deleteJob = async(req:requestType, res:Response) => {
 
     if(!req?.body || !req?.body?.company){
         return res.status(400).json({message:'invalid data'})
@@ -110,7 +129,7 @@ const deleteJob = async(req, res) => {
     await job.destroy({where:{jobid}})
 }
 
-const createJob = async (req, res) => {
+const createJob = async (req:requestType, res:Response) => {
 
     if (!req?.body || !req?.body?.company) {
         return res.status(400).json({ message: 'invalid data' })
@@ -133,6 +152,11 @@ const createJob = async (req, res) => {
     }
 
     try {
+
+        const preExistingJob=await job.findByPk(jobid)
+        if(preExistingJob){
+            return res.status(400).json({message:'Job already exists'})
+        }
         const preExistingCompany = await company.findOne({ where: { name } })
 
         if (!preExistingCompany) {

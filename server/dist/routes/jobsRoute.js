@@ -27,7 +27,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
-const registerController_1 = __importDefault(require("../controllers/registerController"));
-const registerRouter = express.Router();
-registerRouter.post('/', registerController_1.default);
-exports.default = registerRouter;
+const verifyRoles_1 = __importDefault(require("../middleware/verifyRoles"));
+const rolesList_1 = __importDefault(require("../config/rolesList"));
+const jobsController_1 = require("../controllers/jobsController");
+const jobsRoute = express.Router();
+// Set up routes with middleware
+jobsRoute.route('/')
+    // Uncomment and use if JWT verification is not needed for the entire userRoute
+    // .get(verifyJWT, getAllUsers)
+    .get((0, verifyRoles_1.default)(rolesList_1.default.User), jobsController_1.getAllJobs)
+    .post((0, verifyRoles_1.default)(rolesList_1.default.Admin, rolesList_1.default.Editor), jobsController_1.createJob)
+    .put((0, verifyRoles_1.default)(rolesList_1.default.Admin, rolesList_1.default.Editor), jobsController_1.editJob)
+    .delete((0, verifyRoles_1.default)(rolesList_1.default.Admin), jobsController_1.deleteJob);
+jobsRoute.route('/:id')
+    .get((0, verifyRoles_1.default)(rolesList_1.default.User), jobsController_1.getJob);
+exports.default = jobsRoute;

@@ -6,4 +6,3 @@ const ROLES_LIST = {
     "Editor": 1998
 };
 exports.default = ROLES_LIST;
-//# sourceMappingURL=rolesList.js.map

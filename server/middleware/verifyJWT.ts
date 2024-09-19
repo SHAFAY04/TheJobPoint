@@ -1,13 +1,30 @@
 export {};
-const dotenv = require('dotenv');
-const jwt = require('jsonwebtoken');
+import { NextFunction, Request,Response } from 'express';
+    import * as dotenv from 'dotenv';
+import * as jwt from 'jsonwebtoken';
 
 dotenv.config();
 
-const access = process.env.ACCESS_TOKEN_SECRET;
-const refresh = process.env.REFRESH_TOKEN_SECRET;
+interface requestType extends Request{
 
-const verifyJWT = (req, res, next) => {
+    headers:{
+
+        authorization?:string,
+        Authorization?:string
+    }
+}
+interface decodedType extends jwt.JwtPayload{
+
+    UserInfo:{
+        username:string,
+        roles:object
+    }
+
+}
+
+const access = process.env.ACCESS_TOKEN_SECRET as string;
+
+const verifyJWT = (req:requestType, res:Response, next:NextFunction) => {
     const authHeader = req.headers.authorization || req.headers.Authorization;
 
     if (!authHeader?.startsWith('Bearer ')) {
@@ -22,10 +39,14 @@ const verifyJWT = (req, res, next) => {
             return res.sendStatus(403); // Forbidden
         }
         // Attach user info from the token to the request
-        req.user = decoded.UserInfo.username;
-        req.roles = decoded.UserInfo.roles;
+        if(decoded && typeof decoded!=="string" && (decoded as decodedType).userInfo.username){
+
+            const decodedTyped=decoded as decodedType
+        (req as any).user = decodedTyped.UserInfo.username;
+        (req as any).roles = decodedTyped.UserInfo.roles;
+        }
         next();
     });
 };
 
-module.exports = verifyJWT;
+export default verifyJWT;

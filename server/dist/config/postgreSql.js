@@ -1,4 +1,5 @@
 "use strict";
+//one reason that require will never run on the browser is that it uses tcp while the browser runs on http and tcp is like very low level and http runs on top of tcp
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -22,12 +23,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express = __importStar(require("express"));
-const registerController_1 = __importDefault(require("../controllers/registerController"));
-const registerRouter = express.Router();
-registerRouter.post('/', registerController_1.default);
-exports.default = registerRouter;
+const dotenv = __importStar(require("dotenv"));
+dotenv.config();
+const sequelize_1 = require("sequelize");
+const sequelize = new sequelize_1.Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    protocol: 'postgres',
+    dialectOptions: {
+        ssl: process.env.NODE_ENV === 'production' ? {
+            require: true,
+            rejectUnauthorized: false
+        } : false, // Disable SSL for development environments
+    },
+});
+exports.default = sequelize;

@@ -1,7 +1,6 @@
 export {};
     import * as  express from 'express';
 import * as path from 'path';
-import * as crypto from 'crypto'
 
 const rootroute = express.Router();
 
@@ -18,4 +17,4 @@ rootroute.get('/oldpage(.html)?', (req, res) => {
     res.status(301).redirect('/idk');
 });
 
-module.exports = rootroute;
+export default rootroute;

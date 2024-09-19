@@ -18,4 +18,4 @@ jobsRoute.route('/')
 jobsRoute.route('/:id')
     .get(verifyRoles(ROLES_LIST.User),getJob);
 
-module.exports = jobsRoute;
+export default jobsRoute;

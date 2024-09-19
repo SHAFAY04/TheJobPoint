@@ -8,4 +8,3 @@ const rs = fs.createReadStream(path.join(__dirname, 'files', 'promiseComplete.tx
 const ws = fs.createWriteStream(path.join(__dirname, 'files', 'newlorem.txt'));
 // Using pipe to streamline the process of reading from one stream and writing to another
 rs.pipe(ws);
-//# sourceMappingURL=stream.js.map

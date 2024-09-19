@@ -1,12 +1,12 @@
+import { NextFunction, Request,Response } from 'express';
+export {};import whitelist from '../config/allowedOrigins';
 
-export {};const whitelist = require('../config/allowedOrigins');
-
-const credentials = (req, res, next) => {
-    if (whitelist.includes(req.headers.origin)) {
-        res.header('Access-Control-Allow-Credentials', true);
+const credentials = (req:Request, res:Response, next:NextFunction) => {
+    const origin=req.headers.origin
+    if (origin && whitelist.includes(origin)) {
+        res.header('Access-Control-Allow-Credentials','true');
     }
 
     next();
 };
-
-module.exports = credentials;
+export default credentials;
