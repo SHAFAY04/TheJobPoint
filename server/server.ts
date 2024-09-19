@@ -40,7 +40,7 @@ app.use(express.json());
 // Middleware for cookies
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'dist','views')));
 app.use('/about', express.static(path.join(__dirname, 'dist','views')));
 
 app.use('/', rootroute);
