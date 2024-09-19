@@ -41,7 +41,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/about', express.static(path.join(__dirname, 'public')));
+app.use('/about', express.static(path.join(__dirname, 'dist','views')));
 
 app.use('/', rootroute);
 
