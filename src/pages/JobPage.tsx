@@ -6,7 +6,7 @@ import JobCompanyInfo from '../components/JobCompanyInfo'
 import JobManage from '../components/JobManage'
 import Spinners from '../components/spinners'
 import Errorpage from './ErrorPage'
-import { useGetJobQuery } from '../api/apiSlice'
+import { useGetJobQuery } from '../api/jobsApiSlice'
 
 
 

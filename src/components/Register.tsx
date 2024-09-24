@@ -1,7 +1,7 @@
 import{ FormEvent, useEffect, useRef, useState } from 'react';
 import { FaCheck, FaTimes, FaInfoCircle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { usePostUserMutation } from '../api/usersApiSlice';
+import { usePostUserMutation } from '../api/registerApiSlice';
 import { nanoid } from '@reduxjs/toolkit';
 type newUserType={
   id:string,

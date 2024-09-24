@@ -56,8 +56,8 @@ app.use(express_1.default.urlencoded({ extended: false }));
 app.use(express_1.default.json());
 // Middleware for cookies
 app.use((0, cookie_parser_1.default)());
-app.use(express_1.default.static(path.join(__dirname, 'public')));
-app.use('/about', express_1.default.static(path.join(__dirname, 'public')));
+app.use(express_1.default.static(path.join(__dirname, 'dist', 'views')));
+app.use('/about', express_1.default.static(path.join(__dirname, 'dist', 'views')));
 app.use('/', root_1.default);
 app.use('/about', subdir_1.default);
 app.use('/register', register_1.default);

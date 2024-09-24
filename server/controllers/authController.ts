@@ -16,9 +16,7 @@ interface requestType extends Request{
         password:string
     }
 }
-interface responseType{
-    
-}
+
 const handleAuth = async (req:requestType, res:Response) => {
     
     let cookie = req.cookies;
@@ -68,7 +66,7 @@ const handleAuth = async (req:requestType, res:Response) => {
 
     } catch (error) {
         console.error('Error in handleAuth:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ message: 'Internal Server Error Lol' });
     }
 };
 export default handleAuth;

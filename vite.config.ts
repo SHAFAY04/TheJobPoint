@@ -9,7 +9,7 @@ export default defineConfig({
     proxy:{
       
       '/api':{
-          target:'http://localhost:8000',
+          target:'https://thejobpoint.onrender.com',
           changeOrigin:true,
           rewrite:(path)=>path.replace(/^\/api/,'')
           

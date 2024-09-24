@@ -6,26 +6,20 @@ export default {
   ],
   theme: {
     extend: {
-      animation: {
-        fadeIn: 'fadeIn 0.3s ease-in forwards',
-        fadeOut: 'fadeOut 0.3s ease-out forwards',
+     
+      fontFamily: {
+        sans: ['Roboto', 'sans-serif'],
+        serif: ['Merriweather', 'serif'],
+        lobster: ['Lobster', 'cursive'],
+        montserrat: ['Montserrat', 'sans-serif'],
+        openSans: ['Open Sans', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
+        raleway: ['Raleway', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
       },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: 0, transform: 'scale(0.9)' },
-          '100%': { opacity: 1, transform: 'scale(1)' },
-        },
-        fadeOut: {
-          '0%': { opacity: 1, transform: 'scale(1)' },
-          '100%': { opacity: 0, transform: 'scale(0.9)' },
-        },
+      gridTemplateColumns: {
+        '70-30': '70% 30%', // Added unit to 30%
       },
-      fontFamily:{
-        sans:['Roboto','sans-serif']
-      },
-      gridTemplateColumns:{
-        '70-30':'70% 28',
-      }
     },
   },
   plugins: [],

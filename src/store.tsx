@@ -3,22 +3,28 @@
 import { Reducer } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
 import jobReducer from './components/jobSlice';
-import  apiSlice  from './api/apiSlice'; // Adjust the path as needed
+import  jobsApiSlice  from './api/jobsApiSlice'; // Adjust the path as needed
 import { Middleware } from '@reduxjs/toolkit';
-import usersApiSlice from './api/usersApiSlice';
+import registerApiSlice from './api/registerApiSlice'
+import authApiSlice from './api/authApiSlice';
 
 // Example type assertion
-const apiMiddleware: Middleware = apiSlice.middleware;
-const apiReducer:Reducer = apiSlice.reducer as Reducer;
+const jobsApiMiddleware: Middleware = jobsApiSlice.middleware;
+const jobsApiReducer:Reducer = jobsApiSlice.reducer as Reducer;
+const registerApiMiddleware:Middleware=registerApiSlice.middleware
+const registerApiReducer:Reducer=registerApiSlice.reducer
+const authApiReducer:Reducer=authApiSlice.reducer
+const authApiMiddleware:Middleware=authApiSlice.middleware
 
 const store = configureStore({
   reducer: {
     job: jobReducer,
-    api: apiReducer,
-    usersApi:usersApiSlice.reducer,
+    api: jobsApiReducer,
+    registerApi:registerApiReducer,
+    authApi:authApiReducer
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiMiddleware,usersApiSlice.middleware),
+    getDefaultMiddleware().concat(jobsApiMiddleware,registerApiMiddleware,authApiMiddleware),
   });
 
 // Define types for RootState and AppDispatch

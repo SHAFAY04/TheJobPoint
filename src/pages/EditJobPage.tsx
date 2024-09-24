@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 // import spinners from '../components/spinners';
 import Spinners from '../components/spinners';
 import Error from './ErrorPage';
-import { useEditJobMutation, useGetJobQuery } from '../api/apiSlice';
+import { useEditJobMutation, useGetJobQuery } from '../api/jobsApiSlice';
 
 
 interface Job {

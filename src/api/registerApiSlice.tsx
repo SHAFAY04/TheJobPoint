@@ -1,20 +1,17 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
-const usersApiSlice = createApi({
+const registerApiSlice = createApi({
 
     reducerPath:'usersApi',
-    baseQuery:fetchBaseQuery({baseUrl:'http://localhost:8001'}),
+    baseQuery:fetchBaseQuery({baseUrl:'/api'}),
     endpoints:(builder)=>({
 
-        getUsers:builder.query({
-
-            query:()=>'/users'
-        }),
+        
         postUser:builder.mutation({
             
             query:(newUser)=>({
-                url:'/users',
+                url:'/register',
                 method:'POST',
                 body:newUser
             })
@@ -23,6 +20,6 @@ const usersApiSlice = createApi({
     
 })
 
-export default usersApiSlice
+export default registerApiSlice
 
-export const { useGetUsersQuery,usePostUserMutation }=usersApiSlice
+export const { usePostUserMutation }=registerApiSlice

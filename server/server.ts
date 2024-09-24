@@ -1,18 +1,18 @@
 export {};
 import { Request,Response } from 'express';
     import * as path from 'path';
-import express from 'express';
+import * as express from 'express';
 import rootroute from './routes/root';
 import aboutroot from './routes/subdir';
 import { logger } from './middleware/logEvents';
 import errorHandler from './middleware/errorHandler';
-import cors from 'cors';
+import * as cors from 'cors';
 import corsOptions from './config/corsOptions';
 import jobsRoute from './routes/jobsRoute';
 import registerRouter from './routes/register';
 import authRoute from './routes/auth';
 import verifyJwt from './middleware/verifyJWT';
-import cookieParser from 'cookie-parser';
+import * as cookieParser from 'cookie-parser';
 import refreshRoute from './routes/refresh';
 import logoutRouter from './routes/logout';
 import credentials from './middleware/credentials';
@@ -41,7 +41,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'dist','views')));
-app.use('/about', express.static(path.join(__dirname, 'dist','views')));
+app.use(express.static(path.join(__dirname, 'dist','public')));
 
 app.use('/', rootroute);
 

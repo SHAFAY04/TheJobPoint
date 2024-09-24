@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import Spinners from '../components/spinners';
 import Error from './ErrorPage';
 import { nanoid } from '@reduxjs/toolkit';
-import { useAddJobMutation } from '../api/apiSlice';
+import { useAddJobMutation } from '../api/jobsApiSlice';
 
 interface Job{
 

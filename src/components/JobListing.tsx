@@ -8,7 +8,7 @@ import Spinners from './spinners';
 // import { RootState,AppDispatch } from '../store';
 // import { fetchJobs } from './jobSlice';
 // import { AsyncThunkAction } from '@reduxjs/toolkit';
-import { useGetJobsQuery } from '../api/apiSlice';
+import { useGetJobsQuery } from '../api/jobsApiSlice';
 import Error from '../pages/ErrorPage';
 
 interface Job {
