@@ -10,7 +10,7 @@ const Login = () => {
   const userRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLParagraphElement | null>(null);
 
-  const [err, setErr] = useState< number | "TIMEOUT_ERROR" | "FETCH_ERROR" | "PARSING_ERROR" | "CUSTOM_ERROR" | string | undefined
+  const [err, setErr] = useState<number | "TIMEOUT_ERROR" | "FETCH_ERROR" | "PARSING_ERROR" | "CUSTOM_ERROR" | string | undefined
   >()
   const [user, setUser] = useState('');
   const [pwd, setPwd] = useState('');
@@ -19,28 +19,30 @@ const Login = () => {
   const [postUser, { isLoading, isError, error, isSuccess }] = usePostUserMutation();
 
   // Reference to the original button
-  const buttonElement = useRef<HTMLButtonElement| null>(null);
+  const buttonElement = useRef<HTMLButtonElement | null>(null);
 
   // Create loading spinner
   const newElement = document.createElement('l-tail-chase');
   newElement.setAttribute('size', '50');
   newElement.setAttribute('speed', '1.75');
   newElement.setAttribute('color', 'white');
-  newElement.style.height = '100%'; 
+  newElement.style.height = '100%';
 
   async function submitLoginForm(e: FormEvent): Promise<void> {
     e.preventDefault();
     try {
-       // Replace button with the new loading element
-       buttonElement.current?.replaceWith(newElement);
-      const response = await postUser({ username: user, password: pwd }).unwrap();
+      // Replace button with the new loading element
+      buttonElement.current?.replaceWith(newElement);
+      // on using .unwrap() on response any response code outside of 200 series is considered as an error by rtk query lmao !
+
+      const response = await postUser({ username: user, password: pwd })
       console.log('Response:', response);
 
       setUser('');
       setPwd('');
       setFormSubmitted(true);
 
-     
+
     } catch (err) {
       newElement.replaceWith(buttonElement.current!);
       // Handle error
@@ -52,6 +54,7 @@ const Login = () => {
   // This will update the UI based on mutation state
   useEffect(() => {
     if (formSubmitted) {
+
       if (isLoading) {
         buttonElement.current?.replaceWith(newElement);
       }
@@ -80,7 +83,7 @@ const Login = () => {
   }, [user, pwd]);
 
   return (
-    isSuccess ? <Success isLogin={false} /> : (
+    isSuccess ? <Success isLogin={true} /> : (
       <section>
         <div className='bg-emerald-300 py-44'>
           <div className='bg-emerald-500 py-14 mx-auto max-w-md px-12'>
@@ -118,16 +121,16 @@ const Login = () => {
               />
 
               {/* Submit button */}
-              <div className='flex justify-center items-center'>
-              <button
-                id='but'
-                ref={buttonElement}
-                type='submit'
-                className='  bg-emerald-300 rounded-md p-4 hover:bg-emerald-600 mb-6 disabled:bg-gray-300 w-full'
-                disabled={!user || !pwd}
-              >
-                LOG IN!
-              </button>
+              <div className='flex justify-center items-center mb-4'>
+                <button
+                  id='but'
+                  ref={buttonElement}
+                  type='submit'
+                  className='  bg-emerald-300 rounded-md p-4 hover:bg-emerald-600 mb-6 disabled:bg-gray-300 w-full'
+                  disabled={!user || !pwd}
+                >
+                  LOG IN!
+                </button>
               </div>
               {/* Register link */}
               <p className='text-lg mb-4'>Don't have an account?</p>
