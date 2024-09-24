@@ -75,7 +75,7 @@ const handleAuth = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
     catch (error) {
         console.error('Error in handleAuth:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ message: 'Internal Server Error Lol' });
     }
 });
 exports.default = handleAuth;

@@ -27,37 +27,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = __importStar(require("path"));
-const express_1 = __importDefault(require("express"));
+const express = __importStar(require("express"));
 const root_1 = __importDefault(require("./routes/root"));
 const subdir_1 = __importDefault(require("./routes/subdir"));
 const logEvents_1 = require("./middleware/logEvents");
 const errorHandler_1 = __importDefault(require("./middleware/errorHandler"));
-const cors_1 = __importDefault(require("cors"));
+const cors = __importStar(require("cors"));
 const corsOptions_1 = __importDefault(require("./config/corsOptions"));
 const jobsRoute_1 = __importDefault(require("./routes/jobsRoute"));
 const register_1 = __importDefault(require("./routes/register"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const verifyJWT_1 = __importDefault(require("./middleware/verifyJWT"));
-const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const cookieParser = __importStar(require("cookie-parser"));
 const refresh_1 = __importDefault(require("./routes/refresh"));
 const logout_1 = __importDefault(require("./routes/logout"));
 const credentials_1 = __importDefault(require("./middleware/credentials"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const PORT = process.env.PORT || 3500;
-const app = (0, express_1.default)();
+const app = express();
 app.use(logEvents_1.logger);
 // Handle options credentials check before CORS; this middleware checks if the request origin is allowed and sets the Allow credentials to true so cookies can be fetched in the frontend
 app.use(credentials_1.default);
 // Cross-Origin Resource Sharing
-app.use((0, cors_1.default)(corsOptions_1.default));
-app.use(express_1.default.urlencoded({ extended: false }));
+app.use(cors(corsOptions_1.default));
+app.use(express.urlencoded({ extended: false }));
 //this gives you access to req.body and we can get json data
-app.use(express_1.default.json());
+app.use(express.json());
 // Middleware for cookies
-app.use((0, cookie_parser_1.default)());
-app.use(express_1.default.static(path.join(__dirname, 'dist', 'views')));
-app.use('/about', express_1.default.static(path.join(__dirname, 'dist', 'views')));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'dist', 'views')));
+app.use(express.static(path.join(__dirname, 'dist', 'public')));
 app.use('/', root_1.default);
 app.use('/about', subdir_1.default);
 app.use('/register', register_1.default);
