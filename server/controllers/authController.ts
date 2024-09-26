@@ -20,7 +20,7 @@ interface requestType extends Request{
 const handleAuth = async (req:requestType, res:Response) => {
     
     let cookie = req.cookies;
-    if (cookie.jwt) return res.status(409).send({ message: 'Another User Already Logged In!' });
+    if (cookie.jwt) return res.status(409).json({ message: 'Another User Already Logged In!' });
 
     try {
         const { username, password } = req.body;
@@ -62,7 +62,7 @@ const handleAuth = async (req:requestType, res:Response) => {
         res.cookie('jwt', refreshtoken, { httpOnly: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
 
         // Send the access token to the client
-        res.json({ accessToken });
+        res.json({ accessToken,roles });
 
     } catch (error) {
         console.error('Error in handleAuth:', error);
