@@ -22,13 +22,16 @@ const handleLogout = async (req:requestType, res:Response) => {
 
     // Is refresh token in DB/user.json?
     let foundUser = await users.findOne({where:{refreshtoken:refreshToken}});
-    if (!foundUser) {
+    const refr=foundUser?.getDataValue('refreshToken')
+    const name=foundUser?.getDataValue('username')
+    if (!refr) {
         res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });
         return res.sendStatus(204); // Successful but no content to send
     }
-    
-    foundUser.setDataValue('refreshtoken',null)
-foundUser.save()
+    await users.update({
+        refreshToken:null
+    },  { where: { username: name } } )
+   
 
     res.clearCookie('jwt', { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }); // secure:true; this option only serves on https that we will use in production we are currently in development
     res.sendStatus(204);

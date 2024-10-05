@@ -36,6 +36,7 @@ const handleNewUser = async (req:requestType, res:Response) => {
 
     //the reason you are able to do this is express.json() which automatically parses the upcoming json string into javascript object
     const { username, password, roles } = req.body;
+    //Destructuring missing properties from an object doesn't throw an error; instead, it safely assigns undefined to any property that isn't present.
     const {Admin,Editor,User}=req.body.roles
 
     if (!validateUser(username,password)) {

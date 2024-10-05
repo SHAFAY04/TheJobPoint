@@ -39,9 +39,10 @@ const verifyJWT = (req:requestType, res:Response, next:NextFunction) => {
             return res.sendStatus(403); // Forbidden
         }
         // Attach user info from the token to the request
-        if(decoded && typeof decoded!=="string" && (decoded as decodedType).userInfo.username){
-
+        else{
+            
             const decodedTyped=decoded as decodedType
+            
         (req as any).user = decodedTyped.UserInfo.username;
         (req as any).roles = decodedTyped.UserInfo.roles;
         }

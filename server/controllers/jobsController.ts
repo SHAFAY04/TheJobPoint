@@ -42,7 +42,7 @@ const getAllJobs = async (req:requestType, res:Response) => {
         res.json(result)
     }
     catch (err) {
-        res.status(500).json({ message: err })
+        res.status(500).json({lmao: err })
     }
 }
 const getJob = async (req:requestType, res:Response) => {
