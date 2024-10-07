@@ -1,5 +1,5 @@
 import {Request,Response} from 'express'
-import users from './../model/userSchema'
+import Users from './../model/userSchema'
 
 interface requestType extends Request{
 
@@ -18,22 +18,20 @@ const handleLogout = async (req:requestType, res:Response) => {
         return res.sendStatus(204); // No Content to send
     }
 
-    const refreshToken = cookies.jwt;
+    const refreshtoken = cookies.jwt;
 
     // Is refresh token in DB/user.json?
-    let foundUser = await users.findOne({where:{refreshtoken:refreshToken}});
-    const refr=foundUser?.getDataValue('refreshToken')
+    let foundUser = await Users.findOne({where:{refreshtoken}});
+    const refr=foundUser?.getDataValue('refreshtoken')
     const name=foundUser?.getDataValue('username')
     if (!refr) {
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });
+        res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true});
         return res.sendStatus(204); // Successful but no content to send
     }
-    await users.update({
-        refreshToken:null
-    },  { where: { username: name } } )
-   
+    
+        await Users.update({refreshtoken:null},{where:{username:name}})
 
-    res.clearCookie('jwt', { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }); // secure:true; this option only serves on https that we will use in production we are currently in development
+    res.clearCookie('jwt', { httpOnly: true}); // secure:true; this option only serves on https that we will use in production we are currently in development
     res.sendStatus(204);
 
 };
