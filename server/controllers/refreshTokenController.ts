@@ -28,6 +28,7 @@ const handleRefreshToken = async (req: requestType, res: Response) => {
     }
 
     const refreshtoken = cookies.jwt;
+    
     try {
         const foundUser = await users.findOne({
             where:
@@ -37,6 +38,7 @@ const handleRefreshToken = async (req: requestType, res: Response) => {
                 }
             }
         })
+        
         const refr = foundUser?.getDataValue('refreshtoken')
         const foundUserroles = foundUser?.getDataValue('roles')
         const name = foundUser?.getDataValue('username')
@@ -53,23 +55,24 @@ const handleRefreshToken = async (req: requestType, res: Response) => {
 
         jwt.verify(refreshtoken, refresh, (err, decoded) => {
             if (err ) {
+                console.log('incorrect refresh')
                 return res.sendStatus(403);
             }
-            if(decoded && typeof decoded!=="string" && (decoded as decodedType).username){
 
                 const decodedTyped=decoded as decodedType
 
                 if(name!==decodedTyped.username){
+                    console.log('names doesnt match')
                     return res.status(403)
                 }
             const accessToken = jwt.sign(
-                { "UserInfo": { "username": decoded.username, "roles": roles } },
+                { "UserInfo": { "username": decodedTyped.username, "roles": roles } },
                 access,
                 { expiresIn: '30s' }
             );
 
-            res.json({ accessToken });
-        }
+            res.json({ accessToken,roles });
+        
         });
     }
     catch(e){
