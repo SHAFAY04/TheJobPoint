@@ -10,11 +10,8 @@ import { toast } from 'react-toastify';
 import Spinners from '../components/spinners';
 import Error from './ErrorPage';
 import { useEditJobMutation, useGetJobQuery, useGetJobsQuery } from '../api/authApiSlice';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
-import { error } from 'console';
 
 
 interface Job{
@@ -101,14 +98,13 @@ const EditJobPage = () => {
    const [ContactEmail, setContactEmail] = useState<string>('');
    const [ContactPhone, setContactPhone] = useState<string>('');
 
-   const user=useSelector((state:RootState)=>state.auth.username)!
   const submitEditedJob = async(e: FormEvent) => {
     setFormSubmitted(true)
     e.preventDefault();
     
 
     const editedJob: Job = {
-      employer:user,
+      employer:employer,
       jobid:jobid,
       jobtype: type,
       title: ListingName,

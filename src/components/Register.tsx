@@ -1,8 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { FaCheck, FaTimes, FaInfoCircle } from 'react-icons/fa';
-import { toast } from 'react-toastify';
 import { usePostUserMutation } from '../api/registerApiSlice';
-import { nanoid, SerializedError } from '@reduxjs/toolkit';
+import {  SerializedError } from '@reduxjs/toolkit';
 import Logo from '../assets/images/Scrw-modified.png'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Success from './Success';

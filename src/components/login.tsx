@@ -1,16 +1,13 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
-import { useContext } from 'react';
-import AuthContext from '../context/AuthContext';
 import Success from './Success';
 import { useLoginMutation, useLogOutMutation } from '../api/authApiSlice';
 import 'ldrs/tailChase';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { SerializedError } from '@reduxjs/toolkit';
-import { useDispatch, UseDispatch } from 'react-redux';
-import { logOut, setCredentials } from '../auth/authSlice';
-import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useDispatch} from 'react-redux';
+import {  setCredentials } from '../auth/authSlice';
+import { Link, useLocation, useNavigate,useSearchParams } from 'react-router-dom';
 import Logo from '../assets/images/Scrw-modified.png'
-import { toast } from 'react-toastify';
 
 
 const Login = () => {
@@ -23,7 +20,7 @@ const Login = () => {
   const [user, setUser] = useState('');
   const [pwd, setPwd] = useState('');
 
-  const [postUser, { isLoading, isSuccess }] = useLoginMutation();
+  const [postUser, { isSuccess }] = useLoginMutation();
 
   // Reference to the original button
   const buttonElement = useRef<HTMLButtonElement | null>(null);

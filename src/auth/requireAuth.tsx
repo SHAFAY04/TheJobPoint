@@ -2,9 +2,7 @@ import { useLocation, Navigate, Outlet, useSearchParams } from "react-router-dom
 
 import { useSelector } from "react-redux";
 
-import React from 'react'
 import { RootState } from "../store";
-import { stat } from "fs";
 import Unauthorized from "../components/Unauthorized";
 
 interface requireAuthType {

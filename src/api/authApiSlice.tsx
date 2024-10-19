@@ -1,7 +1,6 @@
 import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setCredentials, logOut } from "../auth/authSlice";
 import { RootState } from "../store";
-import { url } from "inspector";
 
 interface Creds {
 
@@ -65,7 +64,7 @@ const baseQueryWithReAuth= async (args: string | FetchArgs,api: BaseQueryApi,ext
         //other error will likely be a 401 unauthorized or any error 400 or 500 series
         else{
           console.log('Refresh token expired or invalid, logging out...');
-            api.dispatch(logOut(null))
+            api.dispatch(logOut())
         }
     }
     return result 
@@ -101,10 +100,10 @@ const baseQueryWithReAuth= async (args: string | FetchArgs,api: BaseQueryApi,ext
 
             query:()=>({url:'/logout'}),
             //The logic inside onQueryStarted only handles client-side side effects (like Redux state updates). If that logic fails, the backend logic (removal of refresh token, etc.) is still executed.
-            async onQueryStarted(arg, api) {
+            async onQueryStarted(_arg, api) {
                
                 try{
-                    api.dispatch(logOut(null))
+                    api.dispatch(logOut())
                 }
                 catch(e){
                     console.log('Error During Logout: ',e)

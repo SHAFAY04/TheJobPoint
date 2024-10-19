@@ -1,13 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
 import logo from '../assets/images/Scrw-modified.png'
 import { NavLink } from 'react-router-dom'
-import ToggleDarkMode from './toggledarkmode'
 import useWindowResize from '../hooks/useWindowResize'
 import {FaLaptop, FaSignOutAlt, FaTabletAlt } from 'react-icons/fa'
 import { FaMobileScreen } from 'react-icons/fa6'
-import { logOut } from '../auth/authSlice'
-import { useDispatch, useSelector } from 'react-redux'
-import { UseSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { useLogOutMutation } from '../api/authApiSlice'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
@@ -21,8 +17,6 @@ const Navbar = () => {
   const linkCLass=({isActive}:LinkClassProps)=> isActive?' bg-black text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2':'text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2'
 
   const {width}=useWindowResize()
-
-  const dispatch= useDispatch()
 
   const CurrentAccessToken=useSelector((state:RootState)=>state.auth.accessToken)
 

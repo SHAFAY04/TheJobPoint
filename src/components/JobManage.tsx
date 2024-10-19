@@ -1,8 +1,7 @@
-import  { useContext, useEffect, useState } from 'react'
+import  {  useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { deleteJobContext } from '../App'
-import { useDeleteJobMutation, useGetJobQuery } from '../api/authApiSlice'
+import { useDeleteJobMutation } from '../api/authApiSlice'
 
 interface Job{
   employer:string
