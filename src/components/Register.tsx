@@ -1,12 +1,17 @@
-import{ FormEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { FaCheck, FaTimes, FaInfoCircle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { usePostUserMutation } from '../api/registerApiSlice';
-import { nanoid } from '@reduxjs/toolkit';
-type newUserType={
-  id:string,
-  username:string,
-  password:string
+import { nanoid, SerializedError } from '@reduxjs/toolkit';
+import Logo from '../assets/images/Scrw-modified.png'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import Success from './Success';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+type newUserType = {
+
+  username: string,
+  password: string,
+  roles: object
 }
 
 
@@ -29,8 +34,25 @@ const Register = () => {
   const [matchPwdValid, setmatchPwdValid] = useState(false);
   const [matchPwdFocus, setmatchPwdFocus] = useState(false);
 
-  const [err, setErr] = useState<string|number|undefined>('');
-  const[submitted,setSubmitted]=useState(false)
+  const [err, setErr] = useState<number | "TIMEOUT_ERROR" | "FETCH_ERROR" | "PARSING_ERROR" | "CUSTOM_ERROR" | string | undefined
+  >()
+  const [submitted, setSubmitted] = useState(false)
+
+  const [searchParams] = useSearchParams()
+  const isEditor = searchParams.get('editor') === 'true'
+
+  // Reference to the original button
+  const buttonElement = useRef<HTMLButtonElement | null>(null);
+
+  // Create loading spinner
+  const newElement = document.createElement('l-tail-chase');
+  newElement.setAttribute('size', '50');
+  newElement.setAttribute('speed', '1.75');
+  newElement.setAttribute('color', 'white');
+  newElement.style.height = '100%';
+
+  const nav = useNavigate()
+
 
   useEffect(() => {
     userRef.current?.focus();
@@ -53,57 +75,83 @@ const Register = () => {
   }, [user, pwd, matchPwd]);
 
 
-//USING THE RTKQUERY!
-const [postUser,{isSuccess,isError,isLoading,error}]=usePostUserMutation()
+  //USING THE RTKQUERY!
+  const [postUser, { isSuccess }] = usePostUserMutation()
 
-useEffect(()=>{
-if(submitted){
-  if(isLoading){
-    toast.info('Loading..please wait!')
-  }
-  else if(isError){
-    setTimeout(()=>{
-      toast.dismiss()
-      setErr('status' in error? error.status : error.message)
-      errRef.current?.focus()
-      toast.error('Oops! Could`nt register')
-  
-    },300)
-  }
-  else{
+  useEffect(() => {
+    if (submitted) {
+      if (isSuccess) {
+        setTimeout(() => {
+          nav('/login')
+        }, 2000)
+      }
 
-    toast.success('YAY! registered successfully!')
-  }
-  
-}
-  
-},[isSuccess,isError,isLoading])
+    }
+
+  }, [isSuccess, submitted])
 
   async function handleSubmit(event: FormEvent): Promise<void> {
 
     event.preventDefault()
-    const v1= USER_REG.test(user)
-    const v2= PWD_REG.test(pwd)
+    const v1 = USER_REG.test(user)
+    const v2 = PWD_REG.test(pwd)
 
-    if(!v1||!v2){
+    if (!v1 || !v2) {
       setErr('Invalid Entry')
       return
     }
-    const newUser:newUserType={
-      id:nanoid(4),
-      username:user,
-      password:pwd
+    const newUser: newUserType = {
+
+      username: user,
+      password: pwd,
+      roles: isEditor ? {
+        User: 2024,
+        Editor: 1998
+      } : {
+        User: 2024
+      }
+
 
     }
-    console.log(user,pwd)
-    postUser(newUser)
     setSubmitted(true)
+    try {
+
+      buttonElement.current?.replaceWith(newElement);
+
+      await postUser(newUser).unwrap()
+    }
+    catch (err) {
+      //any response code outside of 200 series is considered as an error by rtk query lmao !
+
+      newElement.replaceWith(buttonElement.current!);
+
+      if ('status' in (err as FetchBaseQueryError)) {
+
+        if ((err as FetchBaseQueryError).status === 400) {
+          setErr('Username and Password Required!')
+        }
+        else if ((err as FetchBaseQueryError).status === 401) {
+          setErr('Invalid Username Or Password!')
+        }
+        else {
+          //simply means the status code lies with in the 5xx series which means a server issue
+          setErr('No Server Response!')
+        }
+      }
+      else {
+
+        if ('message' in (err as SerializedError)) {
+          setErr((err as SerializedError).message)
+        }
+      }
+      errRef.current?.focus();
+    }
   }
   return (
-    <div className='container m-auto'>
-      <section className='bg-emerald-400 shadow-2xl py-14 px-10 mx-48 my-28'>
-        <p ref={errRef} className={err ? 'text-red-700 p-2 mb-4 bg-red-200 w-full' : 'hidden'} aria-live="assertive">{err}</p>
-        <h1 className='text-3xl mx-16 mb-8 font-thin'>REGISTER</h1>
+    <section className='pt-10 h-screen bg-emerald-200'>
+      {isSuccess ? <Success isLogin={false} /> : (<div><div><img className='mx-auto drop-shadow-2xl h-40 fadeScaleBounce' src={Logo} alt="Logo Here" /></div><section className='bg-emerald-400 shadow-2xl max-w-sm  mt-10 py-14 px-10 mx-auto'>
+        <p ref={errRef} className={err ? 'text-red-700 p-2 mb-6 bg-red-200 w-full' : 'hidden'} aria-live="assertive">{err}</p>
+        <h1 className='text-center font-serif text-4xl mb-8'>{isEditor ? 'EMPLOYER REGISTRATION' : 'REGISTRATION'}</h1>
         <form onSubmit={handleSubmit}>
           <div className="flex items-center space-x-2">
             <label htmlFor="username">USERNAME:</label>
@@ -116,7 +164,7 @@ if(submitted){
           </div>
           <input
             type="text"
-            className='mt-4 p-2 rounded-md w-full'
+            className='mt-2 p-2 rounded-md w-full'
             id='username'
             ref={userRef}
             autoComplete="off"
@@ -137,15 +185,15 @@ if(submitted){
             <div className="flex items-center space-x-2">
               <label htmlFor="password">PASSWORD:</label>
               <span className={pwdValid ? 'text-green-800' : 'hidden'}>
-                <FaCheck className='text-2xl'/>
+                <FaCheck className='text-2xl' />
               </span>
               <span className={!pwd || pwdValid ? 'hidden' : 'text-red-600'}>
-                <FaTimes className='text-2xl'/>
+                <FaTimes className='text-2xl' />
               </span>
             </div>
             <input
               type="password"
-              className='mt-4 p-2 rounded-md'
+              className='mt-2 p-2 rounded-md'
               id='password'
               onChange={(e) => setpwd(e.target.value)}
               required
@@ -154,8 +202,8 @@ if(submitted){
               onFocus={() => setpwdFocus(true)}
               onBlur={() => setpwdFocus(false)}
             />
-          </div> 
-          <p id='upwdnote' className={`${pwdFocus &&  !pwdValid ? 'text-white bg-black rounded-md p-1 mt-6' : 'hidden'} text-sm mt-1`}>
+          </div>
+          <p id='upwdnote' className={`${pwdFocus && !pwdValid ? 'text-white bg-black rounded-md p-1 mt-6' : 'hidden'} text-sm mt-1`}>
             <FaInfoCircle />Is at least 8 characters long.<br />
             Contains at least one uppercase letter, one lowercase letter, one digit, and one special character<br />
             Allowed special charecters: <span aria-label='exclamation mark'>!</span>
@@ -175,18 +223,18 @@ if(submitted){
           <div className="flex flex-col mt-4">
             <div className="flex items-center space-x-2">
               <label htmlFor="password">CONFIRM PASSWORD:</label>
-              <span className={matchPwd && matchPwdValid &&pwdValid ? 'text-green-800' : 'hidden'}>
-                <FaCheck className='text-2xl'/>
+              <span className={matchPwd && matchPwdValid && pwdValid ? 'text-green-800' : 'hidden'}>
+                <FaCheck className='text-2xl' />
               </span>
-              <span className={!matchPwdFocus || matchPwdValid? 'hidden' : 'text-red-600' }>
-                <FaTimes className='text-2xl'/>
+              <span className={!matchPwdFocus || matchPwdValid ? 'hidden' : 'text-red-600'}>
+                <FaTimes className='text-2xl' />
               </span>
-              
-              
+
+
             </div>
             <input
               type="password"
-              className='mt-4 p-2 rounded-md'
+              className='mt-2 p-2 rounded-md'
               id='matchpassword'
               onChange={(e) => setmatchPwd(e.target.value)}
               required
@@ -195,17 +243,21 @@ if(submitted){
               onFocus={() => setmatchPwdFocus(true)}
               onBlur={() => setmatchPwdFocus(false)}
             />
-          </div> 
-          <p id='umatchpwdnote' className={`${matchPwdFocus &&  !matchPwdValid ? 'text-white bg-black rounded-md p-1 mt-6' : 'hidden'} text-sm mt-1`}>
+          </div>
+          <p id='umatchpwdnote' className={`${matchPwdFocus && !matchPwdValid ? 'text-white bg-black rounded-md p-1 mt-6' : 'hidden'} text-sm mt-1`}>
             <FaInfoCircle />Passwords Does'nt match!<br />
-            
+
           </p>
-          <button className='mt-10 shadow-2xl hover:bg-emerald-600 w-full p-2 rounded-md bg-white disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed'  disabled={!userValid || !pwdValid || !matchPwdValid}>Sign Up</button>
+          <div className='flex justify-center items-center mb-4 mt-8 '>
+            <button ref={buttonElement} className='shadow-2xl hover:bg-emerald-600 w-full p-4 rounded-md bg-white disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed' disabled={!userValid || !pwdValid || !matchPwdValid}>Sign Up</button>
+
+          </div>
           <p className='mt-5 mb-2'>Already Registered?</p>
-          <a className='underline' href="#">Sign In</a>
+          <Link className='underline text-lg' to={'/login'}>Sign In Now!</Link>
         </form>
-      </section>
-    </div>
+      </section></div>)}
+    </section>
+
   );
 }
 

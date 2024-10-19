@@ -4,6 +4,10 @@ import Company from '../model/companySchema'
 import { DataTypes } from 'sequelize';
 
 const job = sequelize.define('job', {
+  employer:{
+    type:DataTypes.STRING(50),
+    allowNull:false,
+  },
   jobid: {
     type: DataTypes.STRING(10),
     allowNull: false,

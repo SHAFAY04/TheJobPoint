@@ -3,7 +3,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 
 const registerApiSlice = createApi({
 
-    reducerPath:'usersApi',
+    reducerPath:'registerApi',
     baseQuery:fetchBaseQuery({baseUrl:'/api'}),
     endpoints:(builder)=>({
 

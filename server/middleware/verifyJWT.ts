@@ -36,7 +36,7 @@ const verifyJWT = (req:requestType, res:Response, next:NextFunction) => {
     // Verify the token using the access secret
     jwt.verify(token, access, (err, decoded) => {
         if (err) {
-            return res.sendStatus(403); // Forbidden
+            return res.status(403).json({message:'Invalid Access Token'}); // Forbidden
         }
         // Attach user info from the token to the request
         else{

@@ -6,9 +6,28 @@ import JobCompanyInfo from '../components/JobCompanyInfo'
 import JobManage from '../components/JobManage'
 import Spinners from '../components/spinners'
 import Errorpage from './ErrorPage'
-import { useGetJobQuery } from '../api/jobsApiSlice'
+import { useGetJobQuery } from '../api/authApiSlice'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store'
+import { useEffect, useState } from 'react'
 
 
+interface Job{
+  
+  employer:string;
+  jobid:string;
+  jobtype: string;
+  title: string;
+  jobdescription: string;
+  salary: string;
+  location: string;
+  company:{
+    name:string,
+    description:string,
+    contactphone:string,
+    contactemail:string,
+  }
+}
 
 // dataLoader is from the react-router-dom and since it is linked to the router it has an object pram which kinda helps you getting the path prams like id of job to fetch so that you dont have to use useLocation or usePrams hook
 // const JobLoader: LoaderFunction = async ({ params }) => {
@@ -54,7 +73,6 @@ const JobPage =() => {
   // }, [])
 
   const { data: job, isLoading, isError, error } = useGetJobQuery(id);
-
   // const dispatch= useDispatch<AppDispatch>()
 
   // useEffect(()=>{
@@ -64,6 +82,18 @@ const JobPage =() => {
   // },[dispatch,id])
   // const {job,error,loading}=useSelector((state:RootState)=>state.job)
 
+  const user=useSelector((State:RootState)=>State.auth.username)
+ 
+  const [jobPoster,setJobPoster]=useState(false)
+  
+useEffect(() => {
+  // Only run the effect if the data is fetched and job is not undefined
+  if (job && !isLoading && !isError) {
+    console.log(job.employer)
+    user===job.employer?setJobPoster(true):setJobPoster(false)
+  }
+}, [job, isLoading, isError]);  // Depend on job, isLoading, and isError
+console.log(job)
   return (
    
       
@@ -71,20 +101,21 @@ const JobPage =() => {
 
           <Back />
           {isLoading ? (
-  <Spinners loading={isLoading} />
+            <div className='mt-64'>  <Spinners loading={isLoading} />
+</div>
 ) : isError ? (
   <Errorpage error={error} />
 ) : (
-  <section className="bg-emerald-300">
+  <section className="bg-emerald-300 h-screen">
     <div className="container m-auto py-10 px-4">
       <div className="grid sm:grid-cols-1 md:grid-cols-[70%_30%] lg:grid-cols-[7fr_3fr] w-full gap-6">
         <main>
-          <JobIntro job={job} />
-        <JobDesc job={job} />
+        <JobIntro job={job as Job} />
+        <JobDesc job={job as Job} />
         </main>
         <aside>
-          <JobCompanyInfo job={job} />
-          <JobManage id={job.id} />
+          <JobCompanyInfo job={job as Job} />
+          {jobPoster?<JobManage job={job as Job}/>:null}
         </aside>
       </div>
     </div>

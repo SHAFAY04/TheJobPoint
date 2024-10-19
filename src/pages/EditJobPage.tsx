@@ -1,6 +1,5 @@
 import  { FormEvent,useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import Job from '../components/Job';
 import { toast } from 'react-toastify';
 // import { editJobContext } from '../App';
 // import { useDispatch, useSelector } from 'react-redux';
@@ -10,28 +9,34 @@ import { toast } from 'react-toastify';
 // import spinners from '../components/spinners';
 import Spinners from '../components/spinners';
 import Error from './ErrorPage';
-import { useEditJobMutation, useGetJobQuery } from '../api/jobsApiSlice';
+import { useEditJobMutation, useGetJobQuery, useGetJobsQuery } from '../api/authApiSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { SerializedError } from '@reduxjs/toolkit';
+import { error } from 'console';
 
 
-interface Job {
-  id:string|undefined,
-  type: string;
+interface Job{
+  employer:string;
+  jobid:string;
+  jobtype: string;
   title: string;
-  description: string;
+  jobdescription: string;
   salary: string;
   location: string;
-  company: {
-    name: string;
-    description: string;
-    contactPhone: string;
-    contactEmail: string;
-  };
+  company:{
+    name:string,
+    description:string,
+    contactphone:string,
+    contactemail:string,
+  }
 }
 
 
 const EditJobPage = () => {
 
-  const { id } = useParams();
+  const { id } = useParams()
 
 
   // Now you can use the id variable
@@ -41,10 +46,51 @@ const EditJobPage = () => {
   // const { loading, error } = useSelector((state: RootState) => state.job)
 
   //USING RTK QUERY!
-  const [editJob, { isLoading: isEditLoading, isError: isEditError, error: editError }] = useEditJobMutation(); 
+  const [editJob, { isLoading: isEditLoading,isError:isEditError, isSuccess: isEditSuccess, error: editError }] = useEditJobMutation(); 
    const [showError,setShowError]=useState(false)
-   const { data: job, isLoading: isGetLoading, isError: isGetError, error: getError } = useGetJobQuery(id);
+   const { data: job, isLoading: isGetLoading, isError: isGetError, isSuccess:isGetSuccess, error:getError } = useGetJobQuery(id);
+   const { refetch } = useGetJobsQuery(); // to trigger refetch
 
+   useEffect(()=>{
+
+    if(isGetError){
+      toast.dismiss()
+      if('status' in (getError as FetchBaseQueryError)){
+        const e= getError as FetchBaseQueryError
+        
+        if(e.data && typeof e.data==='object' && 'message' in e.data){
+          
+          toast.error(`${e.status}: ${e.data.message}`)
+         
+        }
+      }
+      else{
+        toast.dismiss()
+        if('message' in (getError as SerializedError)){
+          const e = getError as SerializedError
+          toast.error(`${e.code}: ${e.message}`)
+         
+        }
+      }
+      
+    }
+    if(isGetSuccess){
+      setEmployer(job.employer)
+      setId(job.jobid)
+       setType(job.jobtype || 'Full-Time');
+       setListingName(job.title || '');
+       setDescription(job.jobdescription || '');
+       setSalary(job.salary || 'Under $50K');
+       setLocation(job.location || '');
+       setCompanyName(job.company.name || '');
+       setCompanyDescription(job.company.description || '');
+       setContactEmail(job.company.contactemail || '');
+       setContactPhone(job.company.contactphone || '');
+    }
+   },[isGetError,isGetSuccess])
+
+   const [employer,setEmployer]=useState<string>('')
+   const [jobid,setId]=useState<string>('')
    const [type, setType] = useState<string>('Full-Time');
    const [ListingName, setListingName] = useState<string>('');
    const [Description, setDescription] = useState<string>('');
@@ -54,82 +100,87 @@ const EditJobPage = () => {
    const [CompanyDescription, setCompanyDescription] = useState<string>('');
    const [ContactEmail, setContactEmail] = useState<string>('');
    const [ContactPhone, setContactPhone] = useState<string>('');
- 
-   useEffect(() => {
-     if (job) {
-       setType(job.type || 'Full-Time');
-       setListingName(job.title || '');
-       setDescription(job.description || '');
-       setSalary(job.salary || 'Under $50K');
-       setLocation(job.location || '');
-       setCompanyName(job.company.name || '');
-       setCompanyDescription(job.company.description || '');
-       setContactEmail(job.company.contactEmail || '');
-       setContactPhone(job.company.contactPhone || '');
-     }
-   }, [job]);
-  const submitEditedJob = (e: FormEvent) => {
+
+   const user=useSelector((state:RootState)=>state.auth.username)!
+  const submitEditedJob = async(e: FormEvent) => {
+    setFormSubmitted(true)
     e.preventDefault();
+    
 
     const editedJob: Job = {
-      id:id,
-      type: type,
+      employer:user,
+      jobid:jobid,
+      jobtype: type,
       title: ListingName,
-      description: Description,
+      jobdescription: Description,
       salary: Salary,
       location: location,
       company: {
         name: CompanyName,
         description: CompanyDescription,
-        contactPhone: ContactPhone,
-        contactEmail: ContactEmail,
+        contactphone: ContactPhone,
+        contactemail: ContactEmail,
       },
     };
 
     // dispatch(jobEdit({ newJob: editedJob, id: id }))
-    editJob({editedJob,id})
-    setFormSubmitted(true)
+    try{
+      await editJob(editedJob).unwrap()
+      refetch()
+    }
+    catch(e){
+      setShowError(true)
+      toast.dismiss()
+      if('status' in (e as FetchBaseQueryError)){
+        const error= e as FetchBaseQueryError
+        if(error.data && typeof error.data==='object' && 'message' in error.data){
+          toast.error(`${error.status}: ${error.data.message}`)
+         
+
+          
+        }
+      }
+      else{
+        if('message' in (e as SerializedError)){
+          const error = e as SerializedError
+          toast.error(`${error.code}: ${error.message}`)
+        }
+      }
+      
+    }
   };
 
   const [formSubmitted, setFormSubmitted] = useState(false)
 
+  useEffect(()=>{
 
-  useEffect(() => {
-    console.log(id)
     if(formSubmitted){
-    if (isEditLoading) {
-      toast.info('Loading!')
-    }
-    else if (isEditError) {
-
-      setTimeout(()=>{
-        toast.dismiss
-        toast.error('status' in editError? editError.status:editError.message)
-        setShowError(true)
+    if(isEditLoading ){
   
-      },2000)
+      toast.info('Loading..')
     }
-    else{
-      toast.success('EDITED JOB SUCCESFULLY!')
+    if(isEditSuccess){
+  toast.dismiss()
+      toast.success('JOB EDITED SUCCESSFULLY!')
       setTimeout(()=>{
         return navigate('/jobs')
-      },200)
-      
+
+      },1500)
     }
   }
-  }, [isEditError, isEditLoading, formSubmitted])
+  },[formSubmitted,isEditLoading,isEditSuccess])
   
  
   return (
     <>
       {isGetLoading ? (
-        <Spinners loading={true} />
+        <div className='mt-64'><Spinners loading={true} /></div>
       ) : isGetError ? (
         <Error error={getError} />
       ) : job ? (
         formSubmitted ? (
           showError !== true ? (
-            <Spinners loading={true} />
+            <div className='mt-64'><Spinners loading={true} /></div>
           ) : isEditError ? (
             <Error error={editError} />
           ) : null

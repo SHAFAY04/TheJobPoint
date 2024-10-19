@@ -3,8 +3,10 @@ import 'ldrs/square'
 
 import { GiCheckMark } from 'react-icons/gi'
 import { square } from 'ldrs'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store'
 const Success = ({ isLogin }: { isLogin: boolean }) => {
-  const user='someadwswdwdwdawoda'
+  const user=useSelector((State:RootState)=>State.auth.username)
     return (
 <div className='bg-emerald-500 py-20 my-48  mx-auto  max-w-md shadow-2xl'>  <GiCheckMark color='white' className='text-9xl bounce-icon bg-lime-400 rounded-full p-4 m-auto'/>
   <h1 className='text-center mt-8 mx-6 break-words text-white  font-bold font-serif text-4xl '>{isLogin?`WELCOME ${user}`:`Registered Successfully!`}!</h1>

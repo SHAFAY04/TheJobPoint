@@ -6,6 +6,7 @@ import { FaExclamationTriangle } from 'react-icons/fa';
 type myOwnErrorType={
   errorString:string,
 }
+
 type ErrorProps = {
   error: FetchBaseQueryError | SerializedError | myOwnErrorType
 };
@@ -22,14 +23,18 @@ const Error = ({ error }: ErrorProps) => {
       (() => {
         if ('status' in error) {
           // error is of type FetchBaseQueryError
-          return `Status Code: ${error.status}`
+          const e= error as FetchBaseQueryError
+          if(e.data && typeof e.data==='object' && 'message' in e.data){
+            return `${e.status}: ${e.data.message}`
+          }
         } 
-        else if('errorString' in error){
-            return `Error: ${error.errorString}`
-        }
+       
         else {
           // error is of type SerializedError
-          return error.message || 'Unknown error occurred';
+          if('message' in (error as SerializedError)){
+            const e = error as SerializedError
+            return e.message || 'Unknown error occurred';
+          }
         }
       })()}</p>
       

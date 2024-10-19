@@ -8,17 +8,9 @@ import Spinners from './spinners';
 // import { RootState,AppDispatch } from '../store';
 // import { fetchJobs } from './jobSlice';
 // import { AsyncThunkAction } from '@reduxjs/toolkit';
-import { useGetJobsQuery } from '../api/jobsApiSlice';
+import { useGetJobsQuery } from '../api/authApiSlice';
 import Error from '../pages/ErrorPage';
-
-interface Job {
-  id:string;
-  type: string;
-  title: string;
-  description: string;
-  salary: string;
-  location: string;
-}
+import { useGetRecentJobsQuery } from '../api/recentJobApiSlice';
 
 
 interface JobListingProps{
@@ -87,20 +79,52 @@ const JobListing = ({isHome}:JobListingProps) => {
 //   dispatch(fetchJobs(isHome))
 // },[dispatch,isHome])
 
+interface Job{
+  employer:string;
+  jobid:string;
+  jobtype: string;
+  title: string;
+  jobdescription: string;
+  salary: string;
+  location: string;
+  company:{
+    name:string,
+    description:string,
+    contactphone:string,
+    contactemail:string,
+  }
+}
 //USING RTK QUERY!
+
 const {
 
-  data :jobs,
-  isLoading,
-  isError,
-  error,
+  data: recentJobsData,
+  isLoading: isLoadingRecentJobs,
+  isError: isErrorRecentJobs,
+  error: recentJobsError,
 
-}= useGetJobsQuery()
+} = useGetRecentJobsQuery();
+
+const {
+
+  data: jobsData,
+  isLoading: isLoadingJobs,
+  isError: isErrorJobs,
+  error: jobsError,
+
+} = useGetJobsQuery();
+
+// Now decide which data to use based on isHome
+const jobs = isHome ? recentJobsData : jobsData;
+const isLoading = isHome ? isLoadingRecentJobs : isLoadingJobs;
+const isError = isHome ? isErrorRecentJobs : isErrorJobs;
+const error = isHome ? recentJobsError! : jobsError!;
+
 
   return(
 <>
   {/* <!-- Browse Jobs --> */}
-  <section className="bg-emerald-400 px-4 py-10">
+  <section className="bg-emerald-400 px-4 py-10 ">
     <div className="container-xl lg:container m-auto">
       <h2 className="text-3xl font-bold text-emerald-600 mb-6 text-center">
         {isHome ? 'Recent Jobs' : 'All Jobs'}
@@ -111,9 +135,9 @@ const {
       ) : isError ? (
         <Error error={error} />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {jobs?jobs.map((job) => (
-            <Job key={job.id} job={job} />
+        <div className=" grid grid-cols-1 md:grid-cols-3 gap-6">
+          {jobs?jobs.map((job:Job) => (
+            <Job key={job.jobid} job={job} />
           )):<p>NO JOBS FOUND!</p>}
         </div>
       )}

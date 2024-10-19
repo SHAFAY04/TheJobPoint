@@ -9,6 +9,7 @@ job.belongsTo(company, { foreignKey: 'companyid' });
 interface requestType extends Request{
 
     body:{
+        employer?:string,
         jobid?:string,
         jobtype?:string,
          title?:string,
@@ -27,6 +28,7 @@ interface requestType extends Request{
 
 const getAllJobs = async (req:requestType, res:Response) => {
 
+
     try {
         const result = await job.findAll({
 
@@ -36,10 +38,11 @@ const getAllJobs = async (req:requestType, res:Response) => {
                     attributes: ['companyid', 'name', 'description', 'contactphone', 'contactemail']
                 }
             ],
-            attributes: ['jobid', 'jobtype', 'title', 'jobdescription', 'salary', 'location']
+            attributes: ['employer','jobid', 'jobtype', 'title', 'jobdescription', 'salary', 'location']
 
         })
         res.json(result)
+        
     }
     catch (err) {
         res.status(500).json({lmao: err })
@@ -53,10 +56,10 @@ const getJob = async (req:requestType, res:Response) => {
             include: [
                 {
                     model: company,
-                    attributes: ['companyid', 'name', 'description', 'contactPhone', 'contactEmail']
+                    attributes: ['companyid', 'name', 'description', 'contactphone', 'contactemail']
                 }
             ],
-            attributes: ['jobid', 'jobtype', 'title', 'description', 'salary', 'location'],
+            attributes: ['employer','jobid', 'jobtype', 'title', 'jobdescription', 'salary', 'location'],
             where: { jobid: req.params.id }
         })
         if(!result){
@@ -65,7 +68,7 @@ const getJob = async (req:requestType, res:Response) => {
         res.json(result)
     } catch (error) {
 
-        res.status(404).json({ message: 'Job doesnt exist' })
+        res.status(500).json({ message: 'Error making request ' })
     }
 }
 const editJob = async (req:requestType, res:Response) => {
@@ -75,10 +78,10 @@ const editJob = async (req:requestType, res:Response) => {
         return res.status(400).json({ message: 'Incomplete Fields' })
     }
 
-    const { jobid, jobtype, title, jobdescription, salary, location } = req.body
+    const { employer, jobid, jobtype, title, jobdescription, salary, location } = req.body
     const { name, description, contactphone, contactemail } = req.body.company
 
-    if (!jobid || !jobtype || !title || !jobdescription || !salary || !location) {
+    if (!employer ||!jobid || !jobtype || !title || !jobdescription || !salary || !location) {
         return res.status(400).json({ message: 'Missing required job fields' });
     }
 
@@ -135,10 +138,10 @@ const createJob = async (req:requestType, res:Response) => {
         return res.status(400).json({ message: 'invalid data' })
     }
 
-    const { jobid, jobtype, title, jobdescription, salary, location } = req.body
+    const { employer,jobid, jobtype, title, jobdescription, salary, location } = req.body
     const { name, description, contactphone, contactemail } = req.body.company
 
-    if (!jobid || !jobtype || !title || !jobdescription || !salary || !location) {
+    if (!employer||!jobid || !jobtype || !title || !jobdescription || !salary || !location) {
         return res.status(400).json({ message: 'Missing required job fields' });
     }
 
@@ -152,7 +155,7 @@ const createJob = async (req:requestType, res:Response) => {
     }
 
     try {
-
+        console.log(employer)
         const preExistingJob=await job.findByPk(jobid)
         if(preExistingJob){
             return res.status(400).json({message:'Job already exists'})
@@ -163,12 +166,12 @@ const createJob = async (req:requestType, res:Response) => {
 
            const companyid=crypto.randomBytes(64).toString('hex').slice(0,4)
             await company.create({ companyid, name, description, contactphone, contactemail })
-            await job.create({ jobid, jobtype, title, jobdescription, salary, location, companyid })
+            await job.create({ employer,jobid, jobtype, title, jobdescription, salary, location, companyid })
             return res.json({ message: 'Job creation Successfull!' })
         }
         const companyid=preExistingCompany.getDataValue('companyid')
         await company.update({ name, description, contactphone, contactemail }, { where: { name } })
-        await job.create({ jobid, jobtype, title, jobdescription, salary, location, companyid })
+        await job.create({employer, jobid, jobtype, title, jobdescription, salary, location, companyid })
         res.json({ message: 'Job creation Successfull!' })
 
     }
@@ -176,5 +179,6 @@ const createJob = async (req:requestType, res:Response) => {
         console.log('Error Creating job: ', e)
     }
 }
+
 
 export { getAllJobs, getJob, createJob, editJob, deleteJob }

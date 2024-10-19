@@ -94,6 +94,22 @@
 .bounce-icon {
   animation: bounce 1s infinite;
 }
+.fadeShafay {
+  animation: shafayFade 1s ease-out;
+}
+
+@keyframes shafayFade {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 
 @keyframes bounce {
   0%, 100% {
@@ -101,5 +117,30 @@
   }
   25% {
     transform: translateY(-10px);
+  }
+}
+
+
+.fadeScaleBounce {
+  animation: fadeScaleBounce 1.5s ease-in-out both;
+  transform-origin: center;
+}
+
+@keyframes fadeScaleBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  30% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+  60% {
+    opacity: 0.9;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }

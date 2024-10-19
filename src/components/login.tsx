@@ -2,11 +2,19 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 import Success from './Success';
-import { usePostUserMutation } from '../api/authApiSlice';
+import { useLoginMutation, useLogOutMutation } from '../api/authApiSlice';
 import 'ldrs/tailChase';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
+import { SerializedError } from '@reduxjs/toolkit';
+import { useDispatch, UseDispatch } from 'react-redux';
+import { logOut, setCredentials } from '../auth/authSlice';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import Logo from '../assets/images/Scrw-modified.png'
+import { toast } from 'react-toastify';
+
 
 const Login = () => {
-  const { setAuth } = useContext(AuthContext);
+
   const userRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLParagraphElement | null>(null);
 
@@ -14,9 +22,8 @@ const Login = () => {
   >()
   const [user, setUser] = useState('');
   const [pwd, setPwd] = useState('');
-  const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const [postUser, { isLoading, isError, error, isSuccess }] = usePostUserMutation();
+  const [postUser, { isLoading, isSuccess }] = useLoginMutation();
 
   // Reference to the original button
   const buttonElement = useRef<HTMLButtonElement | null>(null);
@@ -28,54 +35,83 @@ const Login = () => {
   newElement.setAttribute('color', 'white');
   newElement.style.height = '100%';
 
-  async function submitLoginForm(e: FormEvent): Promise<void> {
-    e.preventDefault();
-    try {
-      // Replace button with the new loading element
-      buttonElement.current?.replaceWith(newElement);
-      // on using .unwrap() on response any response code outside of 200 series is considered as an error by rtk query lmao !
+  const dispatch = useDispatch()
 
-      const response = await postUser({ username: user, password: pwd })
-      console.log('Response:', response);
+  //doing this stuff to navigate the user to the page they actually wanted to access but were redirected to the login page just because they weren't logged in and the page was a protected page
+  const navigate=useNavigate()
+  const location=useLocation()
+  const from=location.state?.from?.pathname ||'/'
+
+ const [searchParams]=useSearchParams()
+ const isEditor=searchParams.get('editor')==='true'
+
+ const [logOut]=useLogOutMutation()
+
+  async function submitLoginForm(e: FormEvent): Promise<void> {
+    
+     // Replace button with the new loading element
+     buttonElement.current?.replaceWith(newElement);
+    e.preventDefault();
+    
+    try {
+      //even tho there is no need for logOut here since the login route doesnt use verifyJwt and would overwrite the credentials of the old user by the new user anyways but we are still doing this so things look cleaner but just and explanantion..
+      await logOut().unwrap()
+
+      //the .unwrap() allows us to use the try catch which will help us handling different errors in the catch block
+      const response = await postUser({ username: user, password: pwd }).unwrap()
+      console.log(response)
+      //similarly here if you dont spread the response in the object that you are sending with the setCredentials method it will just send the whole response object with the sub properties and hence the setCredentials method wont be able to find the accessToken because it will be further located in the response object 
+      dispatch(setCredentials({...response,user}))
+      
 
       setUser('');
       setPwd('');
-      setFormSubmitted(true);
+
 
 
     } catch (err) {
+    
+      //any response code outside of 200 series is considered as an error by rtk query lmao !
+
       newElement.replaceWith(buttonElement.current!);
-      // Handle error
-      setErr('Oops! The server broke!');
+
+      if ('status' in (err as FetchBaseQueryError)) {
+
+        if ((err as FetchBaseQueryError).status === 400) {
+          setErr('Username and Password Required!')
+        }
+        else if ((err as FetchBaseQueryError).status === 401) {
+          setErr('Invalid Username Or Password!')
+        }
+        else {
+          //simply means the status code lies with in the 5xx series which means a server issue
+          setErr('No Server Response!')
+        }
+      }
+      else {
+
+        if ('message' in (err as SerializedError)) {
+          setErr((err as SerializedError).message)
+        }
+      }
       errRef.current?.focus();
     }
   }
-
-  // This will update the UI based on mutation state
-  useEffect(() => {
-    if (formSubmitted) {
-
-      if (isLoading) {
-        buttonElement.current?.replaceWith(newElement);
-      }
-      if (isError && error) {
-        newElement.replaceWith(buttonElement.current!);
-        if ('status' in error) {
-          setErr(error.status);
-        } else if ('message' in error) {
-          setErr(error.message);
-        } else {
-          setErr('An unknown error occurred');
-        }
-        errRef.current?.focus();
-      }
-    }
-  }, [formSubmitted, isLoading, isError, isSuccess, error]);
 
   // Focus on the username input when the component loads
   useEffect(() => {
     userRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+
+    if (isSuccess) {
+
+      setTimeout(() => {
+        navigate(from,{replace:true})
+      }, 1500)
+    }
+  }, [isSuccess])
 
   // Reset error state on input change
   useEffect(() => {
@@ -83,24 +119,26 @@ const Login = () => {
   }, [user, pwd]);
 
   return (
-    isSuccess ? <Success isLogin={true} /> : (
+    
       <section>
-        <div className='bg-emerald-300 py-44'>
-          <div className='bg-emerald-500 py-14 mx-auto max-w-md px-12'>
+       
+        <div className='bg-emerald-200 h-screen py-10 '>
+        {isSuccess ? <Success isLogin={true} /> : (<section><div><img className='mx-auto drop-shadow-2xl h-40 fadeScaleBounce' src={Logo} alt="Logo Here"  /></div>
+          <div className='mt-10 shadow-2xl bg-emerald-400 py-14 mx-auto max-w-sm px-10'>
             <form onSubmit={submitLoginForm}>
               {/* Error message */}
-              <p aria-live="assertive" ref={errRef} className={err ? ' mb-4 text-red-600 bg-red-300 p-2 w-full' : 'hidden'}>
+              <p aria-live="assertive" ref={errRef} className={err ? ' mb-6 text-red-700 bg-red-200 p-2 w-full' : 'hidden'}>
                 {err}
               </p>
-
+        <h1 className='text-center font-serif text-4xl mb-8'>{isEditor?'EMPLOYER LOGIN':'LOGIN'}</h1>
               {/* Username input */}
-              <label htmlFor="username" className='text-2xl'>USERNAME:</label>
+              <label htmlFor="username" >USERNAME:</label>
               <br />
               <input
                 ref={userRef}
                 id='username'
                 type="text"
-                className='p-3 mb-6 mt-4 w-full'
+                className='p-2 mb-4 mt-4 w-full rounded-md'
                 required
                 onChange={(e) => setUser(e.target.value)}
                 value={user}
@@ -109,12 +147,12 @@ const Login = () => {
               <br />
 
               {/* Password input */}
-              <label htmlFor="pwd" className='text-2xl'>PASSWORD:</label>
+              <label htmlFor="pwd">PASSWORD:</label>
               <br />
               <input
                 type="password"
                 id='pwd'
-                className='p-3 mb-8 mt-4 w-full'
+                className='p-2 rounded-md mb-8 mt-4 w-full'
                 required
                 onChange={(e) => setPwd(e.target.value)}
                 value={pwd}
@@ -133,13 +171,15 @@ const Login = () => {
                 </button>
               </div>
               {/* Register link */}
-              <p className='text-lg mb-4'>Don't have an account?</p>
-              <a href="#" className='underline text-lg'>Register Here!</a>
+              <p className=' mb-4'>Don't have an account?</p>
+              <Link className='underline text-lg' to={isEditor?'/register?editor=true':'/register'}>{isEditor?'Register As Employer Now!':'Register Now!'}</Link>
+              
+              
             </form>
-          </div>
+          </div></section>)}
         </div>
       </section>
-    )
+    
   );
 }
 

@@ -1,21 +1,27 @@
 
 
 interface JobKeys{
-  id:string|undefined
-  type: string;
+  employer:string
+  jobid:string
+  jobtype: string;
   title: string;
-  description: string;
+  jobdescription: string;
   salary: string;
   location: string;
   company:{
     name:string,
     description:string,
-    contactPhone:string,
-    contactEmail:string,
+    contactphone:string,
+    contactemail:string,
   }
 }
 
-const JobCompanyInfo = ({job}:{job:JobKeys}) => {
+interface JobCompanyInfoProps {
+  job: JobKeys;
+}
+
+const JobCompanyInfo = ({ job }: JobCompanyInfoProps) => {
+
   return (
     <>
     <div className=' p-6 bg-white rounded-xl shadow-2xl'>
@@ -25,11 +31,11 @@ const JobCompanyInfo = ({job}:{job:JobKeys}) => {
 <p className='my-2 '>{job.company.description}</p>
 <hr className="my-4"></hr>
 <h3 className="text-xl">Contact Email:</h3>
-<p className="my-2  bg-emerald-100 p-2 font-bold">
-  {job.company.contactEmail}
+<p className=" bg-emerald-100 p-2 font-bold break-words">
+  {job.company.contactemail}
 </p>
 <h3 className="text-xl">Contact Phone:</h3>
-<p className="my-2 bg-emerald-100 p-2 font-bold">{job.company.contactPhone}</p>
+<p className="my-2 bg-emerald-100 p-2 font-bold">{job.company.contactphone}</p>
 </div></>
   )
 }

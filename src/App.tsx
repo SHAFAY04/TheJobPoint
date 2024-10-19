@@ -12,6 +12,7 @@ import HooksPage from './pages/hooksPage'
 import { createContext } from 'react'
 import Register from './components/Register'
 import Login from './components/login'
+import RequireAuth from './auth/requireAuth'
 
 //Note that the dist folder is only generated
 //when you run the build command. During 
@@ -103,22 +104,30 @@ const App = () => {
   const [user]=useState('DAVID')
   
 const router = createBrowserRouter(createRoutesFromElements(
+<>
   //LAYOUTS
   //okay so we use layouts for mostly used components like nav bar like this we just wrap all the child routes inside the layout route and when we do this we have to use outlet in the layout file to display the child routes and you can see that in the MainLayout.tsx
 <Route path='/' element={<MainLayout/>}>
 <Route index element={<Homepage />}/>
-<Route path='/jobs' element={<Jobspage/>}/>
-<Route path='/register' element={<Register/>}/>
-<Route path='/login' element={<Login/>}/>
 
 {/*the :id is dynamic its a variable for any id that you pass in for examples job/1 */}
 {/*here we are passing in that dataloader */}
+<Route element={<RequireAuth allowedRoles={[2024]}/>}>
+<Route path='/jobs' element={<Jobspage/>}/>
+</Route>
+<Route element={<RequireAuth allowedRoles={[2024]}/>}>
 <Route path='jobs/:id' element={<JobPage />} />
+</Route>
+<Route element={<RequireAuth allowedRoles={[1998,2004]}/>}>
 <Route path='/edit-job/:id'element={<EditJobPage />}/>
 <Route path='/add-job' element={<AddJobPage/>}/>
+</Route>
 <Route path='/hooks' element={<userContext.Provider value={user}><HooksPage/></userContext.Provider>}/>
-<Route path='*' element={<Errorpage error={{ errorString: 'PAGE NOT FOUND' }}/>}/>
-</Route>))
+<Route path='*' element={<Errorpage error={{status:404,data:{message:'Oops Page not found!'}}}/>}/>
+</Route>
+  <Route path='/register' element={<Register/>}/>
+<Route path='/login' element={<Login/>}/>
+</>))
 
 
   return (

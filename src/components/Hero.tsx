@@ -1,6 +1,6 @@
 import{  ReactNode } from 'react'
 
-type headingProps={title?:string,children:ReactNode, subtitle:string}
+type headingProps={title?:string,children:ReactNode, subtitle?:string}
 
 
 //A REACT COMPONENT CAN HAVE PARAMETERS/ATTRIBUTES

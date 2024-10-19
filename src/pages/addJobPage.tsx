@@ -4,25 +4,27 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Spinners from '../components/spinners';
 import Error from './ErrorPage';
-import { nanoid } from '@reduxjs/toolkit';
-import { useAddJobMutation } from '../api/jobsApiSlice';
+import { nanoid, SerializedError } from '@reduxjs/toolkit';
+import { useAddJobMutation, useGetJobsQuery } from '../api/authApiSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 interface Job{
-
-    id:string,
-    type: string;
-    title: string;
-    description: string;
-    salary: string;
-    location: string;
-    company:{
-      name:string,
-      description:string,
-      contactPhone:string,
-      contactEmail:string,
-    }
+  employer:string
+  jobid:string;
+  jobtype: string;
+  title: string;
+  jobdescription: string;
+  salary: string;
+  location: string;
+  company:{
+    name:string,
+    description:string,
+    contactphone:string,
+    contactemail:string,
   }
-
+}
   
 const addJobPage = () => {
 
@@ -46,33 +48,58 @@ const[showError,setShowError]=useState(false)
 
 //USING RTK QUERY!
 const [addJob,{isLoading,isError,error}]=useAddJobMutation()
+const { refetch } = useGetJobsQuery(); // to trigger refetch
+const [errorString,setError]=useState<string|undefined>('')
 
 //type of form events is not just Event its form Event
 
-const submitForm=(e:FormEvent)=>{
+const employer=useSelector((state:RootState)=>state.auth.username)!
+console.log(employer)
+
+const submitForm=async(e:FormEvent)=>{
     e.preventDefault()
     const id= nanoid(4)
    
     let job:Job={
-        id:id,
-        type:type,
+      employer:employer,
+        jobid:id,
+        jobtype:type,
         title:ListingName,
-        description:Description,
+        jobdescription:Description,
         salary:Salary,
         location:location,
         company:{
             name:CompanyName,
             description:CompanyDescription,
-            contactPhone: ContactPhone,
-            contactEmail:ContactEmail
+            contactphone: ContactPhone,
+            contactemail:ContactEmail
         }
     }
-
+    console.log(job)
     
       // dispatch(jobAdd(job))
-      addJob(job)
-
-      setFormSubmitted(true)
+      try{
+        setFormSubmitted(true)
+     await addJob(job).unwrap()
+     refetch()
+      }
+      catch(e){
+        
+        if ('status' in (e as FetchBaseQueryError)) {
+          const error = e as FetchBaseQueryError;  // Narrowing e to FetchBaseQueryError
+          
+          if (error.status&& error.data && typeof error.data === 'object' && 'message' in error.data) {
+            setError(error.status+': '+error.data.message)
+            console.log(error.status+': '+error.data.message);
+          }
+        }
+        
+        else{
+          if('message' in (e as SerializedError)){
+            setError(`${(e as SerializedError).code}: ${(e as SerializedError).message}`)
+          }
+        }
+      }
      
 
 }
@@ -87,28 +114,30 @@ useEffect(()=>{
 
  else if( isError ){
 
-  
-  setTimeout(() => {
     setShowError(true)
     toast.dismiss()
-    toast.error('status' in error? error.status:error.message)
-  }, 3000);
+    toast.error(errorString)
+
     
   }
 
   else{
-
+toast.dismiss()
     toast.success('JOB ADDED SUCCESSFULLY!')
-    return navigate('/jobs')
+    setTimeout(()=>{
+      return navigate('/jobs')
+
+    },1500)
   }
 }
-},[isLoading,isError])
+},[formSubmitted,isLoading,isError])
 
 return (
     <>
       {formSubmitted ? (
        showError!==true ? (
-          <Spinners loading={true} />
+        <div className='mt-64'><Spinners loading={true} /></div>
+          
         ) : isError && showError ? (
           <Error error={error} />
 

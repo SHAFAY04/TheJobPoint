@@ -3,28 +3,32 @@
 import { Reducer } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
 import jobReducer from './components/jobSlice';
-import  jobsApiSlice  from './api/jobsApiSlice'; // Adjust the path as needed
 import { Middleware } from '@reduxjs/toolkit';
 import registerApiSlice from './api/registerApiSlice'
 import authApiSlice from './api/authApiSlice';
+import authReducer from './auth/authSlice'
+import recentJobApiSlice from './api/recentJobApiSlice';
 
 // Example type assertion
-const jobsApiMiddleware: Middleware = jobsApiSlice.middleware;
-const jobsApiReducer:Reducer = jobsApiSlice.reducer as Reducer;
 const registerApiMiddleware:Middleware=registerApiSlice.middleware
 const registerApiReducer:Reducer=registerApiSlice.reducer
 const authApiReducer:Reducer=authApiSlice.reducer
 const authApiMiddleware:Middleware=authApiSlice.middleware
+const recentJobApiReducer:Reducer=recentJobApiSlice.reducer
+const recentJobApiMiddleware:Middleware=recentJobApiSlice.middleware
 
+//just remember the name of standard slices and the reducerPath of apiSlices should be unique if any of them has the same name or ReducerPaths they can overwrite each other's states 
 const store = configureStore({
   reducer: {
+    auth:authReducer,//authSlice reducer
     job: jobReducer,
-    api: jobsApiReducer,
     registerApi:registerApiReducer,
-    authApi:authApiReducer
+    authApi:authApiReducer, //rtk query authApiSlice reducer
+    recentJobs:recentJobApiReducer
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(jobsApiMiddleware,registerApiMiddleware,authApiMiddleware),
+    getDefaultMiddleware().concat(registerApiMiddleware,authApiMiddleware,recentJobApiMiddleware),
+  devTools:true
   });
 
 // Define types for RootState and AppDispatch

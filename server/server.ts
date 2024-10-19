@@ -1,12 +1,12 @@
 export {};
 import { Request,Response } from 'express';
     import * as path from 'path';
-import  express from 'express';
+import express from 'express';
 import rootroute from './routes/root';
 import aboutroot from './routes/subdir';
 import { logger } from './middleware/logEvents';
 import errorHandler from './middleware/errorHandler';
-import  cors from 'cors';
+import cors from 'cors';
 import corsOptions from './config/corsOptions';
 import jobsRoute from './routes/jobsRoute';
 import registerRouter from './routes/register';
@@ -17,6 +17,7 @@ import refreshRoute from './routes/refresh';
 import logoutRouter from './routes/logout';
 import credentials from './middleware/credentials';
 import * as dotenv from 'dotenv';
+import recentJobRouter from './routes/recentJobs';
 
 dotenv.config();
 
@@ -54,6 +55,8 @@ app.use('/auth', authRoute);
 app.use('/refresh', refreshRoute);
 
 app.use('/logout', logoutRouter);
+
+app.use('/recent-jobs',recentJobRouter)
 
 // Authentication middleware for routes after this point
 app.use(verifyJwt);
