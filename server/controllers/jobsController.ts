@@ -68,7 +68,7 @@ const getJob = async (req:requestType, res:Response) => {
         res.json(result)
     } catch (error) {
 
-        res.status(500).json({ message: 'Error making request ' })
+        res.status(500).json({message: 'Error making request ' })
     }
 }
 const editJob = async (req:requestType, res:Response) => {
@@ -122,20 +122,27 @@ const deleteJob = async(req:requestType, res:Response) => {
         return res.status(400).json({message:'invalid data'})
     }
     const {jobid}=req.body
+    try{
+        const foundjob=await job.findByPk(jobid)
+    
+        if(!foundjob){
+            return res.status(404).json({message:'Job not found!'})
+        }
+    
+        await job.destroy({where:{jobid}})
 
-    const foundjob=await job.findByPk(jobid)
-
-    if(!foundjob){
-        return res.status(404).json({Message:'Job not found!'})
+        res.json({message:'Job Deleted'})
     }
-
-    await job.destroy({where:{jobid}})
+    catch (error) {
+        // Catch and handle any unexpected errors
+        res.status(500).json({ message: (error as Error).message });
+    }
 }
 
 const createJob = async (req:requestType, res:Response) => {
 
     if (!req?.body || !req?.body?.company) {
-        return res.status(400).json({ message: 'invalid data' })
+        return res.status(400).json({message: 'invalid data' })
     }
 
     const { employer,jobid, jobtype, title, jobdescription, salary, location } = req.body

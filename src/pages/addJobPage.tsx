@@ -123,8 +123,9 @@ useEffect(()=>{
 
   else{
 toast.dismiss()
-    toast.success('JOB ADDED SUCCESSFULLY!')
+    
     setTimeout(()=>{
+      toast.success('JOB ADDED SUCCESSFULLY!')
       return navigate('/jobs')
 
     },1500)

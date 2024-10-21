@@ -45,7 +45,7 @@ const EditJobPage = () => {
   //USING RTK QUERY!
   const [editJob, { isLoading: isEditLoading,isError:isEditError, isSuccess: isEditSuccess, error: editError }] = useEditJobMutation(); 
    const [showError,setShowError]=useState(false)
-   const { data: job, isLoading: isGetLoading, isError: isGetError, isSuccess:isGetSuccess, error:getError } = useGetJobQuery(id);
+   const { data: job, isLoading: isGetLoading, isError: isGetError, isSuccess:isGetSuccess, error:getError,refetch:refetchJob } = useGetJobQuery(id);
    const { refetch } = useGetJobsQuery(); // to trigger refetch
 
    useEffect(()=>{
@@ -122,6 +122,7 @@ const EditJobPage = () => {
     // dispatch(jobEdit({ newJob: editedJob, id: id }))
     try{
       await editJob(editedJob).unwrap()
+      refetchJob()
       refetch()
     }
     catch(e){
@@ -157,8 +158,9 @@ const EditJobPage = () => {
     }
     if(isEditSuccess){
   toast.dismiss()
-      toast.success('JOB EDITED SUCCESSFULLY!')
+     
       setTimeout(()=>{
+        toast.success('JOB EDITED SUCCESSFULLY!')
         return navigate('/jobs')
 
       },1500)

@@ -13,7 +13,7 @@ jobsRoute.route('/')
     .get(verifyRoles(ROLES_LIST.User), getAllJobs)
     .post(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Editor), createJob)
     .put(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Editor), editJob)
-    .delete(verifyRoles(ROLES_LIST.Admin), deleteJob);
+    .delete(verifyRoles(ROLES_LIST.Admin ,ROLES_LIST.Editor), deleteJob);
 
 jobsRoute.route('/:id')
     .get(verifyRoles(ROLES_LIST.User),getJob);

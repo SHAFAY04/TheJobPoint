@@ -134,7 +134,7 @@ const baseQueryWithReAuth= async (args: string | FetchArgs,api: BaseQueryApi,ext
       
             query: (job: Job) => ({
               url: '/jobs',
-              method: "DELETE",
+              method: 'DELETE',
               body:job
             })
           }),

@@ -1,131 +1,141 @@
-import { useParams } from 'react-router-dom'
-import Back from '../components/JobBack'
-import JobIntro from '../components/JobIntro'
-import JobDesc from '../components/JobDesc'
-import JobCompanyInfo from '../components/JobCompanyInfo'
-import JobManage from '../components/JobManage'
-import Spinners from '../components/spinners'
-import Errorpage from './ErrorPage'
-import { useGetJobQuery } from '../api/authApiSlice'
-import { useSelector } from 'react-redux'
-import { RootState } from '../store'
-import { useEffect, useState } from 'react'
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import Back from '../components/JobBack';
+import JobIntro from '../components/JobIntro';
+import JobDesc from '../components/JobDesc';
+import JobCompanyInfo from '../components/JobCompanyInfo';
+import Spinners from '../components/spinners';
+import Errorpage from './ErrorPage';
+import { useGetJobQuery, useDeleteJobMutation, useGetJobsQuery } from '../api/authApiSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { toast } from 'react-toastify';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
+import { SerializedError } from '@reduxjs/toolkit/react';
 
-
-interface Job{
-  
-  employer:string;
-  jobid:string;
+interface Job {
+  employer: string;
+  jobid: string;
   jobtype: string;
   title: string;
   jobdescription: string;
   salary: string;
   location: string;
-  company:{
-    name:string,
-    description:string,
-    contactphone:string,
-    contactemail:string,
-  }
+  company: {
+    name: string;
+    description: string;
+    contactphone: string;
+    contactemail: string;
+  };
 }
 
-// dataLoader is from the react-router-dom and since it is linked to the router it has an object pram which kinda helps you getting the path prams like id of job to fetch so that you dont have to use useLocation or usePrams hook
-// const JobLoader: LoaderFunction = async ({ params }) => {
-//   try {
-//     const res = await fetch(`/api/jobs/${params.id}`);
-//     const data: Job = await res.json();
-//     return data;
-//   } catch (error) {
-//     console.error(error);
-//     return null; // Return null on error or when data is not found
-//   }
-// };
-
-const JobPage =() => {
-
-  //to get the id from the route path i can normally use the usePrams hook its specifically designed for that purpose it can fetch all your prams in your path as in my case path='jobs/:id' my only pram is :id so i can do ,const { id } = useParams(); and easily get the id
-
-  //useLocation is detailed mostly used to get details like hash location changes etc
-  //to get our path from the route we can do location.pathname as i have used below
-  // const location = useLocation()
-  const { id } = useParams()
-
-  //i am gonna comment this useEffect out because we can use dataLoader and you will see it outside the JobPage function ofcourse because it technically gets exported
-  // useEffect(() => {
-
-  //   const fetchJob = async () => {
-
-  //     try {
-  //       const res = await fetch('/api' + location.pathname)
-  //       const data = await res.json()
-  //       setJob(data)
-
-  //     } catch (error) {
-  //       console.log('Error Fetching ', error)
-  //     }
-  //     finally {
-  //       setLoading(false)
-  //     }
-
-  //   }
-  //   fetchJob()
-
-  // }, [])
-
+const JobPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const { data: job, isLoading, isError, error } = useGetJobQuery(id);
-  // const dispatch= useDispatch<AppDispatch>()
+  const user = useSelector((state: RootState) => state.auth.username);
 
-  // useEffect(()=>{
-  //   dispatch(jobGet(id))
-  //   getJob(id)
+  const [jobPoster, setJobPoster] = useState(false);
 
-  // },[dispatch,id])
-  // const {job,error,loading}=useSelector((state:RootState)=>state.job)
+  // deleteJob state
+  const [deleteJob, { isLoading: isDeleteLoading, isError: isDeleteError, error: deleteError, isSuccess: isDeleteSuccess }] = useDeleteJobMutation();
+  const [deleteSubmitted, setDeleteSubmitted] = useState(false)
 
-  const user=useSelector((State:RootState)=>State.auth.username)
- 
-  const [jobPoster,setJobPoster]=useState(false)
-  
-useEffect(() => {
-  // Only run the effect if the data is fetched and job is not undefined
-  if (job && !isLoading && !isError) {
-    console.log(job.employer)
-    user===job.employer?setJobPoster(true):setJobPoster(false)
-  }
-}, [job, isLoading, isError]);  // Depend on job, isLoading, and isError
-console.log(job)
+  useEffect(() => {
+    if (job && !isLoading && !isError) {
+      user === job.employer ? setJobPoster(true) : setJobPoster(false);
+    }
+  }, [job, isLoading, isError]);
+
+  const { refetch } = useGetJobsQuery(); // to trigger refetch
+
+  const onButtonDelete = async () => {
+    const confirm = window.confirm('Are you sure you wanna do this?');
+    if (!confirm) return;
+
+    try {
+      setDeleteSubmitted(true)
+      await deleteJob(job).unwrap();
+      refetch()
+
+    } catch (e) {
+      toast.dismiss()
+      if ('status' in (e as FetchBaseQueryError)) {
+        const error = e as FetchBaseQueryError
+        if (error.data && typeof error.data === 'object' && 'message' in error.data) {
+          toast.error(`${error.status}: ${error.data.message}`)
+
+        }
+      }
+      else {
+        if ('message' in (e as SerializedError)) {
+          const error = e as SerializedError
+          toast.error(`${error.code}: ${error.message}`)
+        }
+      }
+
+    }
+  };
+  useEffect(() => {
+
+    if (deleteSubmitted) {
+
+
+      if (isDeleteLoading) {
+        toast.info('Loading...')
+      }
+
+      if (isDeleteSuccess) {
+        toast.dismiss()
+        toast.success('Deleted Successfully!')
+        setTimeout(() => {
+          
+          navigate('/jobs')
+        }, 1500)
+
+      }
+    }
+  }, [deleteSubmitted, isDeleteLoading, isDeleteSuccess])
   return (
-   
-      
-        <>
+    <>
+      <Back />
+      {isLoading ? (
+        <div className="mt-64">
+          <Spinners loading={isLoading} />
+        </div>
+      ) : isDeleteLoading ? (<div className="mt-64">
+        <Spinners loading={isDeleteLoading} />
+      </div>) : isError ? (
+        <Errorpage error={error} />
+      ) : isDeleteError ? (
+        <Errorpage error={deleteError} />
+      ) : (
+        <section className="bg-emerald-300 h-screen">
+          <div className="container m-auto py-10 px-4">
+            <div className="grid sm:grid-cols-1 md:grid-cols-[70%_30%] lg:grid-cols-[7fr_3fr] w-full gap-6">
+              <main>
+                <JobIntro job={job as Job} />
+                <JobDesc job={job as Job} />
+              </main>
+              <aside>
+                <JobCompanyInfo job={job as Job} />
+                {jobPoster && (
+                  <div className='p-6 mt-6 bg-white rounded-xl shadow-2xl'>
+                    <h3 className="text-xl font-bold mb-6">Manage Job</h3>
+                    <Link to={`/edit-job/${job.jobid}`} className="bg-indigo-500 hover:bg-indigo-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block">Edit Job</Link>
 
-          <Back />
-          {isLoading ? (
-            <div className='mt-64'>  <Spinners loading={isLoading} />
-</div>
-) : isError ? (
-  <Errorpage error={error} />
-) : (
-  <section className="bg-emerald-300 h-screen">
-    <div className="container m-auto py-10 px-4">
-      <div className="grid sm:grid-cols-1 md:grid-cols-[70%_30%] lg:grid-cols-[7fr_3fr] w-full gap-6">
-        <main>
-        <JobIntro job={job as Job} />
-        <JobDesc job={job as Job} />
-        </main>
-        <aside>
-          <JobCompanyInfo job={job as Job} />
-          {jobPoster?<JobManage job={job as Job}/>:null}
-        </aside>
-      </div>
-    </div>
-  </section>
-)}
-
-        </>
-      
+                    <button onClick={onButtonDelete} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block">
+                      Delete Job
+                    </button>
+                  </div>
+                )}
+              </aside>
+            </div>
+          </div>
+        </section>
+      )}
+    </>
   );
-  
-}
+};
 
-export {JobPage as default}
+export default JobPage;
