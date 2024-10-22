@@ -6,11 +6,14 @@ Technologies and Concepts Learned and Used:
      .Hooks all the usual ones (useEffect,useState,useParams,useLocation,useContext)
      .Custom hooks like (useWindowResize and useFetch)
      .ContextApi (used it while learning not applied in the current version)
+     .FetchApi (used it in earlier development stages)
+     .XHRHttpRequest (used it in earlier development stages)
+     .JSON Server (used it in earlier development stages)
      .Redux State Management For global auth state
      .RTK Query for efficient Fetching
      .React Router DOM for efficient Routing
 
-2. EXPRESS:
+3. EXPRESS:
      .builtin Middlewares for json, cors, cookies
      .MVC pattern
      .Custom middlewares for JWT Verification and Roles Verification
