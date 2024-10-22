@@ -2,6 +2,9 @@
 
 import { GiCheckMark } from 'react-icons/gi'
 import { square } from 'ldrs'
+
+square.register()
+
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 const Success = ({ isLogin }: { isLogin: boolean }) => {
