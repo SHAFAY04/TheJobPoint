@@ -1,7 +1,9 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import Success from './Success';
 import { useLoginMutation, useLogOutMutation } from '../api/authApiSlice';
-import 'ldrs/tailChase';
+import { tailChase } from 'ldrs'
+
+tailChase.register()
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { SerializedError } from '@reduxjs/toolkit';
 import { useDispatch} from 'react-redux';
