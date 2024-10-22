@@ -32,7 +32,7 @@ interface Job{
 
 //you need credentials include to send that secure http only cookie
 const baseQuery= fetchBaseQuery({
-    baseUrl: '/api', credentials: 'include', prepareHeaders(headers, { getState }) {
+    baseUrl: `${import.meta.env.VITE_BACKEND_URL}`, credentials: 'include', prepareHeaders(headers, { getState }) {
 
         const token = (getState() as RootState).auth.accessToken
 
