@@ -7,7 +7,10 @@ export const refreshApiSlice = createApi({
     endpoints:(builder)=>({
 
         refresh:builder.query({
-            query:()=>'/refresh'
+            query:()=>({
+                url:'/refresh',
+                credentials:'include'
+            })
         })
     })
 })
