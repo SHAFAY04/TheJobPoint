@@ -59,8 +59,8 @@ const handleAuth = async (req:requestType, res:Response) => {
         
 
         // Set the refresh token as an HttpOnly cookie
-        res.cookie('jwt', refreshtoken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-
+        res.cookie('jwt', refreshtoken, { httpOnly: true, secure: true,   // Only set to true in production.
+            sameSite: "none", maxAge: 24 * 60 * 60 * 1000 });
         // Send the access token to the client
         res.json({ accessToken,roles });
 
