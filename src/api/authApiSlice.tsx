@@ -57,7 +57,7 @@ const baseQueryWithReAuth= async (args: string | FetchArgs,api: BaseQueryApi,ext
             const user=(api.getState() as RootState).auth.username
             //store the new token
             //if you dont spread it like this... the payload will have refreshResult object and then the setCredentials wont be able to find the access token
-            api.dispatch(setCredentials({...refreshResult.data,user}))
+            api.dispatch(setCredentials({...refreshResult.data}))
             //retrying the original query with new access token
             result= await baseQuery(args,api,extraOptions)
         }

@@ -13,6 +13,7 @@ import { createContext } from 'react'
 import Register from './components/Register'
 import Login from './components/login'
 import RequireAuth from './auth/requireAuth'
+import PersistLogin from './auth/persistLogin'
 
 //Note that the dist folder is only generated
 //when you run the build command. During 
@@ -107,6 +108,7 @@ const router = createBrowserRouter(createRoutesFromElements(
 <>
   //LAYOUTS
   //okay so we use layouts for mostly used components like nav bar like this we just wrap all the child routes inside the layout route and when we do this we have to use outlet in the layout file to display the child routes and you can see that in the MainLayout.tsx
+  <Route element={<PersistLogin/>}>
 <Route path='/' element={<MainLayout/>}>
 <Route index element={<Homepage />}/>
 
@@ -124,6 +126,7 @@ const router = createBrowserRouter(createRoutesFromElements(
 </Route>
 <Route path='/hooks' element={<userContext.Provider value={user}><HooksPage/></userContext.Provider>}/>
 <Route path='*' element={<Errorpage error={{status:404,data:{message:'Oops Page not found!'}}}/>}/>
+</Route>
 </Route>
   <Route path='/register' element={<Register/>}/>
 <Route path='/login' element={<Login/>}/>
