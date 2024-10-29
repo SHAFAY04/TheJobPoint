@@ -31,7 +31,7 @@ const handleLogout = async (req:requestType, res:Response) => {
     
         await Users.update({refreshtoken:null},{where:{username:name}})
 
-    res.clearCookie('jwt', { httpOnly: true}); // secure:true; this option only serves on https that we will use in production we are currently in development
+    res.clearCookie('jwt', { httpOnly: true,sameSite: 'none', secure: true}); // secure:true; this option only serves on https that we will use in production we are currently in development
     res.sendStatus(204);
 
 };
