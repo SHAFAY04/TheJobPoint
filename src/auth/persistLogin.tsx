@@ -9,7 +9,7 @@ import { setCredentials } from './authSlice'
 import { AppDispatch } from '../store'
 
 
-const errorBlock=(e: FetchBaseQueryError | SerializedError,setLoading: any)=>{
+const errorBlock=(e: FetchBaseQueryError | SerializedError)=>{
    
         if ('status' in (e as FetchBaseQueryError)) {
           const error = e as FetchBaseQueryError;  // Narrowing e to FetchBaseQueryError
@@ -25,7 +25,6 @@ const errorBlock=(e: FetchBaseQueryError | SerializedError,setLoading: any)=>{
             console.log(`${(e as SerializedError).code}: ${(e as SerializedError).message}`)
           }
         }
-        setLoading(false)
     
 }
 
@@ -35,23 +34,26 @@ const errorBlock=(e: FetchBaseQueryError | SerializedError,setLoading: any)=>{
     const [loading,setLoading]=useState(true)
 const accessToken=useSelector((state:RootState)=>state.auth.accessToken)
 
-const { data, isError, error } = useRefreshQuery(null);
+const { data, isError, error } = useRefreshQuery();
 
 useEffect(()=>{
 
     if(!accessToken){
-
+      console.log('access token state lost')
         if(isError){
-            errorBlock(error,setLoading)
+          console.log('you got no refresh token since you are not logged in now this error block will set the loading state to false allowing you to proceed to the requireAuth component which will ask you to log in but just telling you that when you are not logged in and you try to access the jobs page or any restricted page it first goes to this persist login component and makes a useless request to /refresh route with no cookies since you are not logged in now to remove this useless request i tried adding a conditional render of this persistlogin component based on if the browser has jwt cookie or not but turns out my cookie is an http only cookie and because of that i am unable to access that cookie and place a condition where persistLogin component will only work if the browser has cookies  '+error)
+            errorBlock(error)
+            setLoading(false)
         }
-        else if(data){
+        if(data){
+          console.log(data)
+          console.log('setting data to state')
             dispatch(setCredentials({...data}))
             setLoading(false)
         }
-        else{
-            setLoading(false)
-        }
+       
     }
+    
 
 },[accessToken,data,isError])
 
