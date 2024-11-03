@@ -1,10 +1,10 @@
 import logo from '../assets/images/Scrw-modified.png'
-import { NavLink } from 'react-router-dom'
+import { NavLink} from 'react-router-dom'
 import useWindowResize from '../hooks/useWindowResize'
 import {FaLaptop, FaSignOutAlt, FaTabletAlt } from 'react-icons/fa'
 import { FaMobileScreen } from 'react-icons/fa6'
-import { useSelector } from 'react-redux'
-import { RootState } from '../store'
+import {  useSelector } from 'react-redux'
+import {  RootState } from '../store'
 import { useLogOutMutation } from '../api/authApiSlice'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { SerializedError } from '@reduxjs/toolkit/react'
@@ -25,11 +25,12 @@ const Navbar = () => {
 async function handleLogout(){
 
   try{
+    
     await logOut().unwrap()
+   window.location.reload()
 
   }
   catch(e){
-
     if ('status' in (e as FetchBaseQueryError)) {
       console.log((e as FetchBaseQueryError).data)
      toast.error((e as FetchBaseQueryError).status)
@@ -43,7 +44,6 @@ async function handleLogout(){
     }
   }
 }
-  
 
   return (
     <>

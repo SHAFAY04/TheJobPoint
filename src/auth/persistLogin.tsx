@@ -7,6 +7,7 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { SerializedError } from '@reduxjs/toolkit/react'
 import { setCredentials } from './authSlice'
 import { AppDispatch } from '../store'
+import Spinners from '../components/spinners'
 
 
 const errorBlock=(e: FetchBaseQueryError | SerializedError)=>{
@@ -53,12 +54,15 @@ useEffect(()=>{
         }
        
     }
+    else{
+      setLoading(false)
+    }
     
 
 },[accessToken,data,isError])
 
 return (
-    <div>{loading?<p>Loading</p>:<Outlet/>}</div>
+    <div>{loading?   <div className='mt-64'><Spinners loading={true} /></div>:<Outlet/>}</div>
 )
 }
 

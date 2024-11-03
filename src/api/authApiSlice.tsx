@@ -1,5 +1,5 @@
 import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { setCredentials, logOut } from "../auth/authSlice";
+import { setCredentials, logOutRedux } from "../auth/authSlice";
 import { RootState } from "../store";
 
 interface Creds {
@@ -64,7 +64,7 @@ const baseQueryWithReAuth= async (args: string | FetchArgs,api: BaseQueryApi,ext
         //other error will likely be a 401 unauthorized or any error 400 or 500 series
         else{
           console.log('Refresh token expired or invalid, logging out...');
-            api.dispatch(logOut())
+            api.dispatch(logOutRedux())
         }
     }
     return result 
@@ -103,7 +103,7 @@ const baseQueryWithReAuth= async (args: string | FetchArgs,api: BaseQueryApi,ext
             async onQueryStarted(_arg, api) {
                
                 try{
-                    api.dispatch(logOut())
+                    api.dispatch(logOutRedux())
                 }
                 catch(e){
                     console.log('Error During Logout: ',e)
