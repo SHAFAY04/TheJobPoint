@@ -12,7 +12,7 @@ const authSlice= createSlice({
             state.accessToken=accessToken
             state.roles=roles
         },
-        logOut:(state)=>{
+        logOutRedux:(state)=>{
              
             state.username=null,
             state.accessToken=null
@@ -21,6 +21,6 @@ const authSlice= createSlice({
     },
 })
 
-export const {setCredentials,logOut}=authSlice.actions
+export const {setCredentials,logOutRedux}=authSlice.actions
 
 export default authSlice.reducer
