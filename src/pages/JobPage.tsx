@@ -110,7 +110,7 @@ const JobPage = () => {
       ) : isDeleteError ? (
         <Errorpage error={deleteError} />
       ) : (
-        <section className="bg-emerald-300 h-screen">
+        <section className="bg-emerald-300">
           <div className="container m-auto py-10 px-4">
             <div className="grid sm:grid-cols-1 md:grid-cols-[70%_30%] lg:grid-cols-[7fr_3fr] w-full gap-6">
               <main>
