@@ -121,15 +121,15 @@ const Login = () => {
     
       <section>
        
-        <div className='bg-emerald-200 h-screen py-10 '>
-        {isSuccess ? <Success isLogin={true} /> : (<section><div><img className='mx-auto drop-shadow-2xl h-40 fadeScaleBounce' src={Logo} alt="Logo Here"  /></div>
-          <div className='mt-10 shadow-2xl bg-emerald-400 py-14 mx-auto max-w-sm px-10'>
+        <div className='bg-emerald-200 h-screen extra-small-padding py-20 '>
+        {isSuccess ? <Success isLogin={true} /> : (<section><div><img className='mx-auto drop-shadow-2xl extra-small-icon h-36 md:h-40 fadeScaleBounce' src={Logo} alt="Logo Here"  /></div>
+          <div className='mt-10 shadow-2xl bg-emerald-400 extra-small-form-padding py-14 md:py-14 mx-auto max-w-xs md:max-w-sm px-10'>
             <form onSubmit={submitLoginForm}>
               {/* Error message */}
               <p aria-live="assertive" ref={errRef} className={err ? ' mb-6 text-red-700 bg-red-200 p-2 w-full' : 'hidden'}>
                 {err}
               </p>
-        <h1 className='text-center font-serif text-4xl mb-8'>{isEditor?'EMPLOYER LOGIN':'LOGIN'}</h1>
+        <h1 className='text-center font-serif text-4xl mb-5 md:mb-8'>{isEditor?'EMPLOYER LOGIN':'LOGIN'}</h1>
               {/* Username input */}
               <label htmlFor="username" >USERNAME:</label>
               <br />
@@ -137,7 +137,7 @@ const Login = () => {
                 ref={userRef}
                 id='username'
                 type="text"
-                className='p-2 mb-4 mt-4 w-full rounded-md'
+                className='p-2 mb-4 mt-2 md:mt-4 w-full rounded-md'
                 required
                 onChange={(e) => setUser(e.target.value)}
                 value={user}
@@ -151,14 +151,14 @@ const Login = () => {
               <input
                 type="password"
                 id='pwd'
-                className='p-2 rounded-md mb-8 mt-4 w-full'
+                className='p-2 rounded-md mb-8 mt-2 md:mt-4 w-full'
                 required
                 onChange={(e) => setPwd(e.target.value)}
                 value={pwd}
               />
 
               {/* Submit button */}
-              <div className='flex justify-center items-center mb-4'>
+              <div className='flex justify-center items-center md:mb-4'>
                 <button
                   id='but'
                   ref={buttonElement}

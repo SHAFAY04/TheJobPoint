@@ -144,3 +144,23 @@
     transform: scale(1);
   }
 }
+
+/* Custom CSS file */
+
+@media (max-width: 375px) {
+  .extra-small-padding {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+@media (max-width: 375px) {
+  .extra-small-form-padding {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+}
+@media (max-width: 375px) {
+  .extra-small-icon {
+    height: 128px;
+  }
+}
