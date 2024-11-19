@@ -51,7 +51,6 @@ const Navbar = () => {
             <NavLink to="/" className={linkClass}>Home</NavLink>
             <NavLink to="/jobs" className={linkClass}>Jobs</NavLink>
             <NavLink to="/add-job" className={linkClass}>Add Job</NavLink>
-            <NavLink to="/hooks" className={linkClass}>Hooks</NavLink>
 
             {/* Device Icon Based on Screen Width */}
             <div>
