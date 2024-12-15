@@ -7,7 +7,7 @@ const googleAuthRoute=express.Router()
 
 const CLIENT_ID=process.env.CLIENT_ID
 const CLIENT_SECRET=process.env.CLIENT_SECRET
-const REDIRECT_URI=`${process.env.DEV_BACKEND_URL}/auth/google/callback`
+const REDIRECT_URI=`https://thejobpoint.onrender.com/auth/google/callback`
 
 googleAuthRoute.get('/',(req,res)=>{
 
