@@ -7,7 +7,7 @@ const LoginWithGoogle = () => {
     const left = window.screenX + (window.innerWidth - popupWidth)/1.7 ;
     const top = window.screenY + (window.innerHeight - popupHeight) ;
     window.open(
-      `${import.meta.env.VITE_BACKEND_URL}/auth/google`,
+      `${import.meta.env.DEV_BACKEND_URL}/auth/google`,
       "Google Login",
       `width=${popupWidth},height=${popupHeight},top=${top},left=${left}`
     );
