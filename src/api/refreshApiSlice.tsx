@@ -8,7 +8,7 @@ type refreshResponse={
 
 export const refreshApiSlice = createApi({
 
-    baseQuery:(fetchBaseQuery({baseUrl:`${import.meta.env.DEV_BACKEND_URL}`,credentials:'include'})),
+    baseQuery:(fetchBaseQuery({baseUrl:`https://thejobpoint.onrender.com`,credentials:'include'})),
     reducerPath:'refreshApi',
     endpoints:(builder)=>({
 

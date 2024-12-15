@@ -7,7 +7,7 @@ const LoginWithGoogle = () => {
     const left = window.screenX + (window.innerWidth - popupWidth)/1.7 ;
     const top = window.screenY + (window.innerHeight - popupHeight) ;
     window.open(
-      `http://localhost:3500/auth/google`,
+      `https://thejobpoint.onrender.com/auth/google`,
       "Google Login",
       `width=${popupWidth},height=${popupHeight},top=${top},left=${left}`
     );

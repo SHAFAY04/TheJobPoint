@@ -32,7 +32,7 @@ interface Job{
 
 //you need credentials include to send that secure http only cookie
 const baseQuery= fetchBaseQuery({
-    baseUrl: `${import.meta.env.DEV_BACKEND_URL}`, credentials: 'include', prepareHeaders(headers, { getState }) {
+    baseUrl: `https://thejobpoint.onrender.com`, credentials: 'include', prepareHeaders(headers, { getState }) {
 
         const token = (getState() as RootState).auth.accessToken
 
