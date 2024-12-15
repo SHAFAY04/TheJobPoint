@@ -18,6 +18,8 @@ import logoutRouter from './routes/logout';
 import credentials from './middleware/credentials';
 import * as dotenv from 'dotenv';
 import recentJobRouter from './routes/recentJobs';
+import googleAuthRoute from './routes/googleAuth'
+import googleAuthCallbackRoute from './routes/googleAuthCallback'
 
 dotenv.config();
 
@@ -51,6 +53,10 @@ app.use('/about', aboutroot);
 app.use('/register', registerRouter);
 
 app.use('/auth', authRoute);
+
+app.use('/auth/google',googleAuthRoute)
+
+app.use('/auth/google/callback',googleAuthCallbackRoute)
 
 app.use('/refresh', refreshRoute);
 

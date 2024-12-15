@@ -20,7 +20,7 @@ interface Job{
 const recentJobApiSlice=createApi({
 
     reducerPath:'recentJobs',
-    baseQuery:fetchBaseQuery({baseUrl:`${import.meta.env.VITE_BACKEND_URL}`}),
+    baseQuery:fetchBaseQuery({baseUrl:`${import.meta.env.DEV_BACKEND_URL}`}),
     endpoints:(builder)=>({
 
         getRecentJobs:builder.query<Job[],void>({

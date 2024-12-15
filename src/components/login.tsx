@@ -10,6 +10,7 @@ import { useDispatch} from 'react-redux';
 import {  setCredentials } from '../auth/authSlice';
 import { Link, useLocation, useNavigate,useSearchParams } from 'react-router-dom';
 import Logo from '../assets/images/Scrw-modified.png'
+import LoginWithGoogle from './LoginWithGoogle';
 
 
 const Login = () => {
@@ -124,7 +125,7 @@ const Login = () => {
         <div className='bg-emerald-200 h-screen extra-small-padding py-20 '>
         {isSuccess ? <Success isLogin={true} /> : (<section><div><img className='mx-auto drop-shadow-2xl extra-small-icon h-36 md:h-40 fadeScaleBounce' src={Logo} alt="Logo Here"  /></div>
           <div className='mt-10 shadow-2xl bg-emerald-400 extra-small-form-padding py-14 md:py-14 mx-auto max-w-xs md:max-w-sm px-10'>
-            <form onSubmit={submitLoginForm}>
+            <form >
               {/* Error message */}
               <p aria-live="assertive" ref={errRef} className={err ? ' mb-6 text-red-700 bg-red-200 p-2 w-full' : 'hidden'}>
                 {err}
@@ -138,7 +139,6 @@ const Login = () => {
                 id='username'
                 type="text"
                 className='p-2 mb-4 mt-2 md:mt-4 w-full rounded-md'
-                required
                 onChange={(e) => setUser(e.target.value)}
                 value={user}
                 autoComplete="off"
@@ -152,7 +152,6 @@ const Login = () => {
                 type="password"
                 id='pwd'
                 className='p-2 rounded-md mb-8 mt-2 md:mt-4 w-full'
-                required
                 onChange={(e) => setPwd(e.target.value)}
                 value={pwd}
               />
@@ -165,10 +164,12 @@ const Login = () => {
                   type='submit'
                   className='  bg-emerald-300 rounded-md p-4 hover:bg-emerald-600 mb-6 disabled:bg-gray-300 w-full'
                   disabled={!user || !pwd}
+                  onClick={submitLoginForm}
                 >
                   LOG IN!
                 </button>
               </div>
+            <LoginWithGoogle/>
               {/* Register link */}
               <p className=' mb-4'>Don't have an account?</p>
               <Link className='underline text-lg' to={isEditor?'/register?editor=true':'/register'}>{isEditor?'Register As Employer Now!':'Register Now!'}</Link>

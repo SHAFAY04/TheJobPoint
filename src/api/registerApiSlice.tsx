@@ -4,7 +4,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 const registerApiSlice = createApi({
 
     reducerPath:'registerApi',
-    baseQuery:fetchBaseQuery({baseUrl:`${import.meta.env.VITE_BACKEND_URL}`}),
+    baseQuery:fetchBaseQuery({baseUrl:`${import.meta.env.DEV_BACKEND_URL}`}),
     endpoints:(builder)=>({
 
         

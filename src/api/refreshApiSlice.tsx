@@ -8,7 +8,7 @@ type refreshResponse={
 
 export const refreshApiSlice = createApi({
 
-    baseQuery:(fetchBaseQuery({baseUrl:`${import.meta.env.VITE_BACKEND_URL}`,credentials:'include'})),
+    baseQuery:(fetchBaseQuery({baseUrl:`${import.meta.env.DEV_BACKEND_URL}`,credentials:'include'})),
     reducerPath:'refreshApi',
     endpoints:(builder)=>({
 
